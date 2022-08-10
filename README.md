@@ -1,2 +1,1 @@
-dah
-# nextjs-tailwind-css-boilerplate
+# Nextjs tailwind css boilerplate.

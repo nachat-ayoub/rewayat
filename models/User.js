@@ -26,14 +26,20 @@ const userSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: true,
+      default: "/avatar.jpg",
     },
     bio: {
       type: String,
-      required: true,
+      default: "a new member of rewayat arabia 😁.",
       min: 10,
       max: 200,
     },
+    novels: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Novel",
+      },
+    ],
   },
   { timestamps: true }
 );
@@ -47,6 +53,7 @@ userSchema.statics.login = async function (EmailOrUsername, password) {
   const auth = await bcrypt.compare(password, user.password);
   return { exists: true, auth, user };
 };
+
 
 const User = mongoose.model("User", userSchema);
 module.exports = User;

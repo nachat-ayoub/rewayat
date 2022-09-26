@@ -1,19 +1,24 @@
 const router = require("express").Router();
-const authMiddleware = require("../middlewares/auth");
-const authorMiddleware = require("../middlewares/author");
-const adminMiddleware = require("../middlewares/admin");
+const chapterRoutes = require("./chapterRoutes");
+
 const {
-  getAll,
-  getOne,
-  create,
-  update,
-  remove,
+  getAllNovels,
+  getNovelsByGenre,
+  getNovel,
+  createNovel,
+  updateNovel,
+  deleteNovel,
 } = require("../controllers/novelController");
 
-router.get("/", authMiddleware, authorMiddleware, getAll);
-router.post("/create", create);
-router.get("/:slug", getOne);
-router.put("/:slug/update", update);
-router.delete("/:slug/delete", remove);
+const { authMiddleware, authorMiddleware } = require("../middlewares");
+
+router.get("/", getAllNovels);
+router.get("/genres/:genre", getNovelsByGenre);
+router.post("/create", authMiddleware, authorMiddleware, createNovel);
+router.get("/:slug", getNovel);
+router.put("/:slug/update", authMiddleware, authorMiddleware, updateNovel);
+router.delete("/:slug/delete", authMiddleware, authorMiddleware, deleteNovel);
+
+router.use("/", chapterRoutes);
 
 module.exports = router;

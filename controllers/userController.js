@@ -1,11 +1,11 @@
 const User = require("../models/User");
-const jwt = require("jsonwebtoken");
 const { hashPassword, createToken } = require("../services/authHelpers");
+const { cloudinaryUpload } = require("../services/cloudinary");
 
 // ! Get All Users
 module.exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({});
+    const users = await User.find({}, "-password").populate("novels");
     res.json({
       action: "getAllUsers",
       ok: true,
@@ -20,9 +20,11 @@ module.exports.getAllUsers = async (req, res) => {
 module.exports.getUser = async (req, res) => {
   try {
     const { username } = req.params;
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }, "-password -role").populate(
+      "novels"
+    );
     if (user) {
-      res.json({ action: "getUser", ok: true, user });
+      return res.json({ action: "getUser", ok: true, user });
     }
     res.json({
       action: "getUser",
@@ -37,13 +39,14 @@ module.exports.getUser = async (req, res) => {
 // ! Register User
 module.exports.register = async (req, res) => {
   try {
-    const { username, email, password, bio, image } = req.body;
-    const fields = { username, email, password, bio, image };
+    let { username, email, password, bio, image } = req.body;
+    const fields = { username, email, password };
 
     for (const key in fields) {
       const field = fields[key];
-      if (!field || typeof field === "undefined" || field.trim() === "") {
-        res.json({
+
+      if (typeof field === "undefined" || !field || field.trim() === "") {
+        return res.json({
           action: "register",
           msg: `${key} is required!`,
           ok: false,
@@ -63,17 +66,37 @@ module.exports.register = async (req, res) => {
     }
 
     const hashed_password = await hashPassword(password);
-    user = await User.create({
-      username,
-      email,
-      password: hashed_password,
-      bio,
-      image,
-    });
+    if (image && bio) {
+      const { url: uploadedImage } = await cloudinaryUpload(image);
+      user = await User.create({
+        username,
+        email,
+        password: hashed_password,
+        bio,
+        image: uploadedImage,
+      });
+    } else {
+      user = await User.create({
+        username,
+        email,
+        password: hashed_password,
+      });
+    }
 
     const token = createToken(user._id);
 
-    res.json({ action: "register", ok: true, token, user });
+    res.json({
+      action: "register",
+      ok: true,
+      user: {
+        role: user.role,
+        username: user.username,
+        email: user.email,
+        image: user.image,
+        bio: user.bio,
+        token,
+      },
+    });
   } catch (error) {
     console.log(error);
   }
@@ -92,7 +115,19 @@ module.exports.login = async (req, res) => {
       });
     } else {
       const token = createToken(user._id);
-      return res.json({ action: "login", ok: true, token, user });
+
+      return res.json({
+        action: "login",
+        ok: true,
+        user: {
+          role: user.role,
+          username: user.username,
+          email: user.email,
+          image: user.image,
+          bio: user.bio,
+          token,
+        },
+      });
     }
   } catch (error) {
     console.log(error);
@@ -102,7 +137,47 @@ module.exports.login = async (req, res) => {
 // ! Update User
 module.exports.updateUser = async (req, res) => {
   try {
-    res.json({ action: "updateUser" });
+    let { role, username, image, bio } = req.body;
+    const current_user = req.user;
+
+    const userData = { role, username, bio };
+
+    for (const key in userData) {
+      if (Object.hasOwnProperty.call(userData, key)) {
+        const val = userData[key].trim();
+        if (!val || val === "") {
+          return res.json({
+            action: "updateUser",
+            ok: false,
+            msg: `${key} is required!`,
+          });
+        }
+      }
+    }
+
+    const user = await User.findOne({ username: req.params.username });
+    if (!user) {
+      return res.json({
+        action: "updateUser",
+        ok: false,
+        msg: "user not found!",
+      });
+    }
+
+    if (image) {
+      const { url } = await cloudinaryUpload(image);
+      image = url;
+    } else {
+      image = user.image;
+    }
+
+    if (current_user.role === "admin") {
+      await user.updateOne({ role, username, image, bio });
+    } else {
+      await user.updateOne({ username, image, bio });
+    }
+
+    return res.json({ action: "updateUser", ok: true, user });
   } catch (error) {
     console.log(error);
   }
@@ -111,7 +186,15 @@ module.exports.updateUser = async (req, res) => {
 // ! Delete User
 module.exports.deleteUser = async (req, res) => {
   try {
-    res.json({ action: "deleteUser" });
+    const user = await User.findOneAndDelete({ username: req.params.username });
+
+    if (user) return res.json({ action: "updateUser", ok: true, user });
+    else
+      return res.json({
+        action: "deleteUser",
+        ok: false,
+        msg: "user not found!",
+      });
   } catch (error) {
     console.log(error);
   }

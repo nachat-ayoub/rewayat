@@ -6,7 +6,7 @@ router.get("/", async (req, res, next) => {
   res.send({ message: "Ok api is working 🚀" });
 });
 
-router.use("/novels", novelRoutes);
 router.use("/auth", userRoutes);
+router.use("/novels", novelRoutes);
 
 module.exports = router;

@@ -1,3 +1,5 @@
+const errorCodes = require("../services/errorCodes");
+
 module.exports = async (req, res, next) => {
   const user = req?.user;
 
@@ -5,5 +7,9 @@ module.exports = async (req, res, next) => {
     return next();
   }
 
-  return res.json({ ok: false, msg: "you are not authorized - not an admin" });
+  return res.status(401).json({
+    ok: false,
+    msg: "you are not authorized",
+    errorCode: errorCodes.admin_auth.code,
+  });
 };

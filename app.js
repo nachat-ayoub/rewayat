@@ -2,6 +2,7 @@ const express = require("express");
 const createError = require("http-errors");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const cors = require("cors");
 require("dotenv").config();
 
 mongoose
@@ -10,9 +11,16 @@ mongoose
   .catch((error) => console.log(error));
 
 const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: false }));
 app.use(morgan("dev"));
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "https://rewayat-arabia.vercel.app"],
+    optionsSuccessStatus: 200,
+  })
+);
 
 app.get("/", async (req, res, next) => {
   res.send({ message: "Awesome it works 🐻" });

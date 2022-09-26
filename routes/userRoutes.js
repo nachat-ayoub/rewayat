@@ -8,11 +8,28 @@ const {
   deleteUser,
 } = require("../controllers/userController");
 
-router.get("/users", getAllUsers);
+const {
+  authMiddleware,
+  adminMiddleware,
+  checkUserMiddleware,
+} = require("../middlewares");
+
+// ? No Auth Required
 router.post("/register", register);
 router.post("/login", login);
-router.get("/:username", getUser);
-router.put("/:username/update", updateUser);
-router.delete("/:username/delete", deleteUser);
+
+// ! Auth Required
+// ? Admin Role Required :
+router.get("/users", authMiddleware, adminMiddleware, getAllUsers);
+router.delete("/:username/delete", authMiddleware, adminMiddleware, deleteUser);
+
+// ? User Check Required :
+router.get("/:username", authMiddleware, checkUserMiddleware, getUser);
+router.put(
+  "/:username/update",
+  authMiddleware,
+  checkUserMiddleware,
+  updateUser
+);
 
 module.exports = router;

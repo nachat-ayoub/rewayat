@@ -9,7 +9,7 @@
     "dep": "git add . && git commit -m \"New Commit\" && git push"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ayoub Nachat",
   "license": "MIT",
   "dependencies": {
     "bcrypt": "^5.0.1",

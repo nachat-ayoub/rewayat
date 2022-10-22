@@ -3,6 +3,7 @@ const slugify = require("slugify");
 const Genre = require("../models/Genre");
 const Novel = require("../models/Novel");
 const User = require("../models/User");
+const { cloudinaryUpload } = require("../services/cloudinary");
 const { removeDuplicateGenres } = require("../services/helpersFunctions");
 
 // ! Get All Novels [X]
@@ -109,8 +110,10 @@ module.exports.createNovel = async (req, res) => {
       }
     }
 
+    const { url: image } = await cloudinaryUpload(req.body?.image);
+
     const user = await User.findById(req.user.id);
-    const novel = await Novel.create({ slug, ...req.body });
+    const novel = await Novel.create({ ...req.body, slug, image });
 
     genres.map(async (genre) => {
       genre.novels.push(novel._id);

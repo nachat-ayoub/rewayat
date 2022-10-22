@@ -12,7 +12,7 @@ mongoose
 
 const app = express();
 app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ limit: "10mb", extended: false }));
+app.use(express.urlencoded({ extended: false, limit: "10mb" }));
 app.use(morgan("dev"));
 
 app.use(

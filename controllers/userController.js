@@ -140,11 +140,11 @@ module.exports.updateUser = async (req, res) => {
     let { role, username, image, bio } = req.body;
     const current_user = req.user;
 
-    const userData = { role, username, bio };
+    const userData = { username, bio };
 
     for (const key in userData) {
       if (Object.hasOwnProperty.call(userData, key)) {
-        const val = userData[key].trim();
+        const val = userData[key]?.trim();
         if (!val || val === "") {
           return res.json({
             action: "updateUser",
@@ -177,7 +177,22 @@ module.exports.updateUser = async (req, res) => {
       await user.updateOne({ username, image, bio });
     }
 
-    return res.json({ action: "updateUser", ok: true, user });
+    const userInfo = {
+      role: user.role,
+      username: user.username,
+      email: user.email,
+      image: user.image,
+      bio: user.bio,
+    };
+
+    const userToken = createToken(userInfo, req.token);
+
+    return res.json({
+      action: "updateUser",
+      ok: true,
+      userToken,
+      user: userInfo,
+    });
   } catch (error) {
     console.log(error);
   }

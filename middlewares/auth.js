@@ -11,6 +11,7 @@ module.exports = async (req, res, next) => {
       const user = await User.findById(decodedToken.id).populate("novels");
       if (user) {
         req.user = user;
+        req.token = token;
         return next();
       }
     }

@@ -1,11 +1,17 @@
 import { requireAuthorAuth } from "../../utils";
 
+import Container from "../../components/Container";
+
 const AuthorPanel = ({ user }) => {
   return (
-    <div>
-      <h1 className="text-lg">AuthorPanel</h1>
-      <pre dir="ltr">{JSON.stringify(user, null, 4)}</pre>
-    </div>
+    <Container className="h-full flex justify-center items-center flex-col">
+      <div dir="ltr" className="text-center">
+        <h1 className="text-2xl font-semibold">
+          We are sorry {user?.username}!
+        </h1>
+        <p className="text-lg">The panel dashboard currently under updates.</p>
+      </div>
+    </Container>
   );
 };
 

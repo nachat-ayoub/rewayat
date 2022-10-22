@@ -1,5 +1,7 @@
-const Container = ({ children }) => {
-  return <div className="py-8 px-6 w-full">{children}</div>;
+const Container = ({ children, className }) => {
+  return (
+    <div className={"py-8 px-6 w-full " + className ?? ""}>{children}</div>
+  );
 };
 
 export default Container;

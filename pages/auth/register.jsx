@@ -2,6 +2,7 @@ import Link from "next/link";
 import { useState } from "react";
 import usePasswordShow from "../../hooks/usePasswordShow";
 import auth from "../../services/auth";
+
 import {
   areMatch,
   isBigThen,
@@ -96,6 +97,7 @@ const register = () => {
       email: email.value,
       password: password.value,
     });
+    console.log(res);
   };
 
   return (

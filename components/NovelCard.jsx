@@ -3,11 +3,12 @@ import Link from "next/link";
 
 const NovelCard = ({ novel }) => {
   return (
-    <div className="w-52 m-1">
+    <div className="w-52">
       <div className="w-full h-72 bg-Gray rounded-lg shadow-lg overflow-hidden">
         <Link href={"/novels/" + novel.slug}>
           <a>
             <Image
+              className="hover:scale-110 hover:rotate-1 transition-all duration-300"
               width={"208px"}
               height={"288px"}
               objectFit={"cover"}
@@ -20,7 +21,10 @@ const NovelCard = ({ novel }) => {
       <div className="px-2 py-1">
         <Link href={"/novels/" + novel.slug}>
           <a>
-            <h4 dir="auto" className="capitalize font-bold">
+            <h4
+              dir="auto"
+              className="capitalize text-center overflow-hidden text-ellipsis w-full whitespace-nowrap font-bold"
+            >
               {novel.title}
             </h4>
           </a>

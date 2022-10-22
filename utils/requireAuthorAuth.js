@@ -1,10 +1,8 @@
-import requireBasicAuth from "./requireAuth";
-
-const allowedRoles = ["admin", "author"];
+import { allowedRoles, requireBasicAuth } from "./index";
 
 const requireAuthorAuth = ({ req }, cb) => {
   try {
-    requireBasicAuth({ req }, ({ auth, user }) => {
+    return requireBasicAuth({ req }, ({ auth, user }) => {
       if (!allowedRoles.includes(user.role)) {
         // Not Authorized
         return {
@@ -14,18 +12,10 @@ const requireAuthorAuth = ({ req }, cb) => {
           },
           props: {},
         };
-      }
-      return cb({ auth, user });
+      } else return cb({ auth, user });
     });
   } catch (error) {
     console.log(error);
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-      props: {},
-    };
   }
 };
 

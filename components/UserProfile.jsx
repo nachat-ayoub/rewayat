@@ -6,6 +6,7 @@ import Image from "next/image";
 import axios from "axios";
 
 import { Dropdown } from "flowbite-react";
+import { allowedRoles } from "../utils";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -21,17 +22,24 @@ const UserProfile = () => {
   };
 
   return (
-    <div className="font-bold mr-2 flex gap-2 justify-center items-center flex-row-reverse">
+    <div className="z-50 font-bold mr-2 flex gap-2 justify-center items-center flex-row-reverse">
       <Dropdown inline={true} placement="bottom">
         <Dropdown.Header>{user.username}</Dropdown.Header>
-        <Dropdown.Item>الملف الشخصي</Dropdown.Item>
-        <Dropdown.Item>New Novel</Dropdown.Item>
-        <Dropdown.Item>New Chapter</Dropdown.Item>
+        <Dropdown.Item onClick={() => router.push(`/auth/${user?.username}`)}>
+          الملف الشخصـي
+        </Dropdown.Item>
+
+        {allowedRoles.includes(user.role) && (
+          <Dropdown.Item onClick={() => router.push("/author-panel")}>
+            لوحة التحكم
+          </Dropdown.Item>
+        )}
+
         <Dropdown.Divider />
         <Dropdown.Item onClick={handleLogout}>تسجيل الخروج</Dropdown.Item>
       </Dropdown>
 
-      <div className="">
+      <div className="flex items-center justify-center">
         <Image
           src={user.image}
           width={"30px"}
@@ -40,7 +48,6 @@ const UserProfile = () => {
           className="rounded-full"
         />
       </div>
-      <div className="hidden md:block">{user.username}</div>
     </div>
   );
 };

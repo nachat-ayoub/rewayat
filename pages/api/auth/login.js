@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   if (req.method === "POST") {
     const { EmailOrUsername, password } = req.body;
     if (EmailOrUsername && password) {
-      const { data: resp, statusCode } = await axios.post(
+      const { data: resp } = await axios.post(
         `${process.env.API_URL}/auth/login`,
         {
           EmailOrUsername,

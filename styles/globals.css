@@ -4,16 +4,13 @@
 
 @layer components {
   .input {
-    @apply shadow-sm focus:outline focus:outline-lighterPurple bg-gray-50 border border-gray-300
-     text-gray-900 text-sm rounded focus:ring-Purple focus:border-Purple block w-full py-2 px-2.5
-      dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white
-       dark:focus:ring-Purple dark:focus:border-Purple dark:shadow-sm;
+    @apply shadow-sm text-sm rounded border focus:border-2 block w-full py-2 px-2.5 pt-[10px] focus:pt-2 bg-gray-50 border-gray-300 text-gray-900 focus:ring-primary-400 focus:border-primary-400 ring-primary-400 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400;
   }
   .btn-purple {
-    @apply text-sm transition-all duration-300 ease-in-out w-full focus:outline-none text-white bg-Purple hover:bg-darkPurple focus:ring-4 focus:ring-purple-300 font-medium rounded px-5 py-2.5 dark:bg-lightPurple dark:hover:bg-Purple dark:focus:ring-purple-900;
+    @apply text-sm transition-all duration-300 ease-in-out w-full focus:outline-none text-white bg-primary-400 hover:bg-primary-600 focus:ring-4 focus:ring-purple-300 font-medium rounded px-5 py-2.5 dark:bg-primary-200 dark:hover:bg-primary-400 dark:focus:ring-purple-900;
   }
 
-  .bg-gradient-purple {
-    @apply bg-gradient-to-r from-darkPurple to-Purple;
+  .bg-gradient-primary {
+    @apply bg-gradient-to-r from-Purple to-primary-600;
   }
 }

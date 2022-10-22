@@ -6,7 +6,6 @@ const register = async (data) => {
     const res = await axios.post(`/api/auth/register`, {
       ...data,
     });
-    // console.log(res.data);
 
     return res;
   } catch (error) {
@@ -69,6 +68,8 @@ const isAuth = ({ req }, JWT_SECRET) => {
   if (!token) return { auth: false, user: null };
   return verifyToken(token, JWT_SECRET);
 };
+
+class AuthHelpers {}
 
 export default {
   verifyToken,

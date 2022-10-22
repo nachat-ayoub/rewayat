@@ -19,16 +19,75 @@ module.exports = {
         darkBlue: "#150050",
         Black: "#0E131A",
         Gray: "#c2c2c2",
+
         primary: {
-          100: "#BF76FF",
-          200: "#AC51FC",
-          300: "#9B37F3",
-          400: "#7E22CE",
-          500: "#610094",
-          600: "#3F0071",
-          700: "#280049",
-          800: "#22013D",
-          900: "#19012C",
+          50: "#b6a9c0",
+          100: "#806991",
+          200: "#492862",
+          300: "#422458",
+          400: "#371e4a",
+          500: "#321A44",
+          600: "#381652",
+          700: "#32144a",
+          800: "#2a113e",
+          900: "#220d31",
+        },
+        // #f4f6f9
+        secondary: {
+          50: "#f6f6f6",
+          100: "#ececed",
+          200: "#d0d0d1",
+          300: "#b3b4b5",
+          400: "#7a7b7e",
+          500: "#414347",
+          600: "#3b3c40",
+          700: "#313235",
+          800: "#27282b",
+          900: "#202123",
+        },
+      },
+      animation: {
+        // Top to Bottom
+        openFromTop: "openFromTop 0.4s ease-in-out forwards",
+        closeFromBottom: "closeFromBottom 0.4s ease-in-out forwards",
+        // Right to Left
+        openFromRight: "openFromRight 0.4s ease-in-out forwards",
+        closeFromLeft: "closeFromLeft 0.4s ease-in-out forwards",
+      },
+      keyframes: {
+        // Top to Bottom
+        openFromTop: {
+          "0%": {
+            height: "0px",
+          },
+          "100%": {
+            height: "104px",
+          },
+        },
+        closeFromBottom: {
+          "0%": {
+            height: "104px",
+          },
+          "100%": {
+            height: "0px",
+          },
+        },
+        // Right To Left
+        openFromRight: {
+          "0%": {
+            width: "64px",
+          },
+          "100%": {
+            width: "240px",
+          },
+        },
+        closeFromLeft: {
+          "0%": {
+            width: "240px",
+          },
+          "100%": {
+            width: "64px",
+          },
         },
       },
     },

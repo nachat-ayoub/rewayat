@@ -1,7 +1,10 @@
-import { isAuth } from "../../services/auth";
+import authFunctions from "../../services/auth";
 
-export default function handler(req, res) {
-  res
-    .status(200)
-    .json({ name: "John Doe", ...isAuth({ req }, process.env.JWT_SECRET) });
+export default async function handler(req, res) {
+  if (req.method === "GET") {
+    return res.status(200).json({
+      message: "Hello World",
+      ...authFunctions.isAuth({ req }, process.env.JWT_SECRET),
+    });
+  }
 }

@@ -16,13 +16,6 @@ const requireBasicAuth = ({ req }, cb) => {
     };
   } catch (error) {
     console.log(error);
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-      props: {},
-    };
   }
 };
 

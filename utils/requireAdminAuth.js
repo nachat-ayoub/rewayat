@@ -1,4 +1,4 @@
-import requireBasicAuth from "./requireAuth";
+import requireBasicAuth from "./requireBasicAuth";
 
 const requireAdminAuth = ({ req }, cb) => {
   try {
@@ -17,13 +17,6 @@ const requireAdminAuth = ({ req }, cb) => {
     });
   } catch (error) {
     console.log(error);
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-      props: {},
-    };
   }
 };
 

@@ -8,8 +8,6 @@ import useToggler from "../../../hooks/useToggler";
 import ClientOnly from "../../../components/ClientOnly";
 
 const NovelPage = ({ novel }) => {
-  // console.log({ ...novel, image: "" });
-
   const [height, setHeight] = useState(0);
   const divRef = useRef(null);
 
@@ -51,12 +49,14 @@ const NovelPage = ({ novel }) => {
                             ? novel.story.slice(0, 200) + "..."
                             : novel.story}
 
-                          <span
-                            className="btn btn-purple m-1 py-0 px-2 cursor-pointer whitespace-nowrap"
-                            onClick={toggleStoryHidden}
-                          >
-                            {storyHidden ? "read more" : "read less"}
-                          </span>
+                          {novel.story.length > 200 && (
+                            <span
+                              className="btn btn-purple m-1 py-0 px-2 cursor-pointer whitespace-nowrap"
+                              onClick={toggleStoryHidden}
+                            >
+                              {storyHidden ? "read more" : "read less"}
+                            </span>
+                          )}
                         </td>
                       </tr>
                       {/* Author */}
@@ -74,7 +74,7 @@ const NovelPage = ({ novel }) => {
                           تاريخ النشر :
                         </th>
                         <td className="py-2 font-semibold">
-                          {novel.createdAt.split("T")[0]}
+                          {novel.createdAt.split("T")[0].replaceAll("-", "/")}
                         </td>
                       </tr>
                       {/* Genres */}
@@ -120,6 +120,7 @@ const NovelPage = ({ novel }) => {
             no-repeat
             `,
                 backgroundSize: "cover",
+                backgroundPosition: "center",
               }}
               className={`w-full h-full scale-110 blur-sm text-Black dark:text-white md:text-white`}
             ></div>
@@ -140,12 +141,14 @@ const NovelPage = ({ novel }) => {
                             ? novel.story.slice(0, 200) + "..."
                             : novel.story}
 
-                          <span
-                            className="btn btn-purple m-1 py-0 px-2 cursor-pointer whitespace-nowrap"
-                            onClick={toggleStoryHidden}
-                          >
-                            {storyHidden ? "read more" : "read less"}
-                          </span>
+                          {novel.story.length > 200 && (
+                            <span
+                              className="btn btn-purple m-1 py-0 px-2 cursor-pointer whitespace-nowrap"
+                              onClick={toggleStoryHidden}
+                            >
+                              {storyHidden ? "read more" : "read less"}
+                            </span>
+                          )}
                         </td>
                       </tr>
                       {/* Author */}
@@ -213,12 +216,14 @@ const NovelPage = ({ novel }) => {
                           ? novel.story.slice(0, 200) + "..."
                           : novel.story}
 
-                        <span
-                          className="btn btn-purple m-1 py-0 px-2 cursor-pointer whitespace-nowrap"
-                          onClick={toggleStoryHidden}
-                        >
-                          {storyHidden ? "read more" : "read less"}
-                        </span>
+                        {novel.story.length > 200 && (
+                          <span
+                            className="btn btn-purple m-1 py-0 px-2 cursor-pointer whitespace-nowrap"
+                            onClick={toggleStoryHidden}
+                          >
+                            {storyHidden ? "read more" : "read less"}
+                          </span>
+                        )}
                       </td>
                     </tr>
                     {/* Author */}
@@ -304,10 +309,10 @@ export const getServerSideProps = async (ctx) => {
     })(),
   ];
 
-  novel.story = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores quas corporis veritatis libero magni voluptatibus nisi ipsum soluta cupiditate veniam inventore, laboriosam quod harum non beatae molestias maiores nemo dolorum!
-  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores quas corporis veritatis libero magni voluptatibus nisi ipsum soluta cupiditate veniam inventore, laboriosam quod harum non beatae molestias maiores nemo dolorum!
-  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores quas corporis veritatis libero magni voluptatibus nisi ipsum soluta cupiditate veniam inventore, laboriosam quod harum non beatae molestias maiores nemo dolorum!
-  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores quas corporis veritatis libero magni voluptatibus nisi ipsum soluta cupiditate veniam inventore, laboriosam quod harum non beatae molestias maiores nemo dolorum!....`;
+  // novel.story = `Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores quas corporis veritatis libero magni voluptatibus nisi ipsum soluta cupiditate veniam inventore, laboriosam quod harum non beatae molestias maiores nemo dolorum!
+  // Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores quas corporis veritatis libero magni voluptatibus nisi ipsum soluta cupiditate veniam inventore, laboriosam quod harum non beatae molestias maiores nemo dolorum!
+  // Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores quas corporis veritatis libero magni voluptatibus nisi ipsum soluta cupiditate veniam inventore, laboriosam quod harum non beatae molestias maiores nemo dolorum!
+  // Lorem ipsum dolor, sit amet consectetur adipisicing elit. Dolores quas corporis veritatis libero magni voluptatibus nisi ipsum soluta cupiditate veniam inventore, laboriosam quod harum non beatae molestias maiores nemo dolorum!....`;
 
   return {
     props: {

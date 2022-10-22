@@ -1,29 +1,26 @@
+import usePasswordShow from "../../hooks/usePasswordShow";
+import auth from "../../services/auth";
 import { useState } from "react";
 import Link from "next/link";
-import usePasswordShow from "../../hooks/usePasswordShow";
-import { isEmpty, isLessThen } from "../../services/validation";
-import auth, { isAuth } from "../../services/auth";
 
-import { useDispatch } from "react-redux";
 import { authenticate } from "../../store/authSlice";
+import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { requireLogout } from "../../utils";
+
+// <Validation>
+//
+
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+//
+// </Validation>
 
 const login = () => {
   const [type, toggleType] = usePasswordShow();
 
-  const [email, setEmail] = useState({
-    value: "ayoub@gmail.com",
-    valid: false,
-    error: "",
-    focused: false,
-  });
-  const [password, setPassword] = useState({
-    value: "",
-    valid: false,
-    error: "",
-    focused: false,
-  });
   const [formError, setFormError] = useState({
     error: false,
     msg: "",
@@ -32,32 +29,42 @@ const login = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  const submitHandler = async () => {
-    // Email Or Username :
-    if (!isEmpty([email, setEmail]) && !isLessThen([email, setEmail], 3)) {
-      setEmail({
-        ...email,
-        valid: true,
-        error: "",
-        focused: true,
-      });
-    } else return;
-    // Password :
-    if (
-      !isEmpty([password, setPassword]) &&
-      !isLessThen([password, setPassword], 8)
-    ) {
-      setPassword({
-        ...password,
-        valid: true,
-        error: "",
-        focused: true,
-      });
-    } else return;
+  //
+  //
+  //
+  //
+  //
+  //
+  //
 
+  const schema = yup.object().shape({
+    identifier: yup
+      .string()
+      .trim()
+      .min(3)
+      .required("You need to provide email or username."),
+    password: yup
+      .string()
+      .min(8)
+      // .matches(/^[a-z]+$/, "Your password should at least contains one letter.")
+      .required(),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const onFormSubmit = async ({ identifier, password }) => {
+    console.log({ identifier, password });
+
+    // ! Trying to login :
     const data = await auth.login({
-      EmailOrUsername: email.value,
-      password: password.value,
+      EmailOrUsername: identifier,
+      password: password,
     });
     const res = data?.data;
 
@@ -73,11 +80,15 @@ const login = () => {
       });
     }
   };
+  //
+  //
+  //
+  //
 
   return (
     <div className="flex flex-1 justify-center items-center">
       <form
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={handleSubmit(onFormSubmit)}
         className="w-full border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 mx-3 sm:mx-8 md:w-[50vw] md:max-w-[30rem]"
         dir="ltr"
       >
@@ -94,30 +105,27 @@ const login = () => {
               id="EmailOrUsername"
               className="input"
               placeholder="email or username..."
-              value={email.value}
-              onChange={(e) => setEmail({ ...email, value: e.target.value })}
+              {...register("identifier")}
             />
 
             <div className="absolute right-0 top-1/2 -translate-y-1/2">
-              {email.focused && email.valid ? (
+              {errors.identifier?.message ? (
+                <span className="mr-1.5 text-red-500">
+                  <i className="fa-solid fa-exclamation-circle" />
+                </span>
+              ) : (
                 <span className="mr-1.5 text-green-500">
                   <i className="fa-solid fa-circle-check" />
                 </span>
-              ) : (
-                email.focused && (
-                  <span className="mr-1.5 text-red-500">
-                    <i className="fa-solid fa-exclamation-circle" />
-                  </span>
-                )
               )}
             </div>
           </div>
           <div
             className={`mt-1 text-red-500 text-sm ${
-              email.focused && !email.valid ? "visible" : "invisible"
+              errors.email?.message ? "visible" : "invisible"
             }`}
           >
-            {email.error}
+            {errors.email?.message}
           </div>
         </div>
         <div className="mb-4">
@@ -132,13 +140,7 @@ const login = () => {
               className="input"
               type={type}
               id="password"
-              value={password.value}
-              onChange={(e) =>
-                setPassword({
-                  ...password,
-                  value: e.target.value,
-                })
-              }
+              {...register("password")}
             />
             <div className="absolute pr-1.5 right-0 top-1/2 -translate-y-1/2">
               <span
@@ -152,22 +154,20 @@ const login = () => {
                 )}
               </span>
 
-              {password.focused && password.valid ? (
+              {errors.password?.message ? (
+                <span className="ml-1.5 text-red-500">
+                  <i className="fa-solid fa-exclamation-circle" />
+                </span>
+              ) : (
                 <span className="ml-1.5 text-green-500">
                   <i className="fa-solid fa-circle-check" />
                 </span>
-              ) : (
-                password.focused && (
-                  <span className="ml-1.5 text-red-500">
-                    <i className="fa-solid fa-exclamation-circle" />
-                  </span>
-                )
               )}
             </div>
           </div>
 
-          {password.focused && !password.valid ? (
-            <div className="text-red-500 text-sm">{password.error}</div>
+          {errors.password?.message ? (
+            <div className="text-red-500 text-sm">{errors.password.error}</div>
           ) : (
             formError.error && (
               <div
@@ -202,7 +202,7 @@ const login = () => {
             Remember me.
           </label>
         </div>
-        <button onClick={submitHandler} type="submit" className="btn-purple">
+        <button type="submit" className="btn-purple">
           Login to your account
         </button>
         <div className="mt-4 mb-3 flex justify-center items-center">

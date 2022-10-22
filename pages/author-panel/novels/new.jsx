@@ -1,12 +1,12 @@
-import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
-
-import { isAuth } from "../../services/auth";
-import helpers from "../../services/helpers";
-import Container from "../../components/Container";
-import { useSelector } from "react-redux";
 import axios from "axios";
+
+import Container from "../../../components/Container";
+import helpers from "../../../services/helpers";
+import { requireAuthorAuth } from "../../../utils";
+import { useSelector } from "react-redux";
 
 const CreateNovel = () => {
   const { user } = useSelector((state) => state.auth.value);
@@ -52,7 +52,7 @@ const CreateNovel = () => {
     createNovel(data);
   };
 
-  const createNovel = ({ title, slug, story, image }) => {
+  const createNovel = ({ title, story, image }) => {
     const { token } = user;
 
     helpers.getBase64(image[0], async (image) => {
@@ -61,6 +61,7 @@ const CreateNovel = () => {
         {
           title,
           story,
+
           image,
           genres: [{ name: "test" }],
         },
@@ -97,30 +98,34 @@ const CreateNovel = () => {
             {...register("title")}
           />
           <div className="my-2">
-            <div className="text-red-400 text-sm">{errors.title?.message}</div>
+            <div className="text-red-500 text-sm">{errors.title?.message}</div>
           </div>
 
           {/* Story */}
           <textarea
             rows={4}
-            className="input mt-2"
+            className="input mt-2 min-h-[2.5rem]"
             type="text"
             placeholder="story..."
             {...register("story")}
           />
           <div className="my-2">
-            <div className="text-red-400 text-sm">{errors.story?.message}</div>
+            <div className="text-red-500 text-sm">{errors.story?.message}</div>
           </div>
 
           {/* Image */}
-          <input
-            className="input mt-2"
-            accept="image/*"
-            type="file"
-            {...register("image")}
-          />
+          <label htmlFor="image" className="">
+            Image :
+            <input
+              id="image"
+              className="input mt-2 py-0"
+              accept="image/*"
+              type="file"
+              {...register("image")}
+            />
+          </label>
           <div className="my-2">
-            <div className="text-red-400 text-sm">{errors.image?.message}</div>
+            <div className="text-red-500 text-sm">{errors.image?.message}</div>
           </div>
 
           {/*  */}
@@ -133,20 +138,10 @@ const CreateNovel = () => {
 
 export default CreateNovel;
 
-export const getServerSideProps = async (ctx) => {
-  const { auth, user } = isAuth({ req: ctx.req }, process.env.JWT_SECRET);
-
-  if (auth && ["admin", "author"].includes(user.role)) {
+export const getServerSideProps = async ({ req }) => {
+  return requireAuthorAuth({ req }, ({ user }) => {
     return {
       props: {},
     };
-  } else {
-    return {
-      redirect: {
-        permanent: false,
-        destination: "/",
-      },
-      props: {},
-    };
-  }
+  });
 };

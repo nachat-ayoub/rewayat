@@ -1,5 +1,7 @@
-# Branches :
+## Branches :
 
-### - client
+### - [master](https://github.com/nachat-ayoub/rewayat-arabia/tree/master)
 
-### - server
+### - [client](https://github.com/nachat-ayoub/rewayat-arabia/tree/client)
+
+### - [server](https://github.com/nachat-ayoub/rewayat-arabia/tree/server)

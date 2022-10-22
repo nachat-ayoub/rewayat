@@ -1,0 +1,13 @@
+{
+    "name": "rewayat-arabia",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+      "dep": "git add . && git commit -m \"New Commit\" && git push"
+    },
+    "keywords": [],
+    "author": "Ayoub Nachat (Full Stack Web Developer)",
+    "license": "MIT"
+  }
+  

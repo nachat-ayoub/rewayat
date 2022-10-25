@@ -6,6 +6,7 @@ const register = async (data) => {
     const res = await axios.post(`/api/auth/register`, {
       ...data,
     });
+    // console.log(res.data);
 
     return res;
   } catch (error) {
@@ -66,6 +67,7 @@ const verifyToken = (token, JWT_SECRET) => {
 const isAuth = ({ req }, JWT_SECRET) => {
   const { token } = req.cookies;
   if (!token) return { auth: false, user: null };
+
   return verifyToken(token, JWT_SECRET);
 };
 

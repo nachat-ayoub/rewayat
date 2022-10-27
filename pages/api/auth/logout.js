@@ -1,12 +1,12 @@
-import authFunctions from "../../../services/auth";
-import helpers from "../../../services/helpers";
+import { isAuth } from "../../../utils/auth";
+import { deleteTokenCookie } from "../../../utils/token";
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    const { auth } = authFunctions.isAuth({ req }, process.env.JWT_SECRET);
+    const { auth } = isAuth({ req }, process.env.JWT_SECRET);
 
     if (auth) {
-      helpers.deleteToken({ req, res });
+      deleteTokenCookie({ req, res });
       return res.status(200).json({
         ok: true,
       });

@@ -1,4 +1,4 @@
-import requireBasicAuth from "./requireBasicAuth";
+import { requireBasicAuth } from "./";
 
 const requireAdminAuth = ({ req }, cb) => {
   try {

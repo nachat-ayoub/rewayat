@@ -1,6 +1,5 @@
+import { createToken, setTokenCookie } from "../../../utils/token";
 import axios from "axios";
-import auth from "../../../services/auth";
-import helpers from "../../../services/helpers";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
@@ -17,8 +16,8 @@ export default async function handler(req, res) {
       console.log(resp);
 
       if (resp.ok) {
-        const token = auth.createToken(resp.user, process.env.JWT_SECRET);
-        helpers.setToken(token, { req, res });
+        const token = createToken(resp.user, process.env.JWT_SECRET);
+        setTokenCookie(token, { req, res });
 
         return res.status(200).json({
           ok: true,

@@ -1,111 +1,87 @@
-import Link from "next/link";
-import { useState } from "react";
 import usePasswordShow from "../../hooks/usePasswordShow";
-import auth from "../../services/auth";
+import { authenticate } from "../../store/authSlice";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import Link from "next/link";
 
-import {
-  areMatch,
-  isBigThen,
-  isEmail,
-  isEmpty,
-  isLessThen,
-  isValidUsername,
-} from "../../services/validation";
-import { requireLogout } from "../../utils";
+import { requireLogout } from "../../utils/middlewares";
+import { registerUser } from "../../utils/auth";
 
-const register = () => {
+// <Validation>
+//
+
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+//
+// </Validation>
+
+const registerPage = () => {
   const [type, toggleType] = usePasswordShow();
   const [type_2, toggleType_2] = usePasswordShow();
 
-  const [username, setUsername] = useState({
-    value: "",
-    valid: false,
-    error: "",
-    focused: false,
-  });
-  const [email, setEmail] = useState({
-    value: "",
-    valid: false,
-    error: "",
-    focused: false,
-  });
-  const [password, setPassword] = useState({
-    value: "",
-    valid: false,
-    error: "",
-    focused: false,
-  });
-  const [repeat_password, setRepeat_password] = useState({
-    value: "",
-    valid: false,
-    error: "",
-    focused: false,
+  const [formError, setFormError] = useState({
+    error: false,
+    msg: "",
   });
 
-  const submitHandler = async () => {
-    // Username :
-    if (
-      !isEmpty([username, setUsername]) &&
-      !isLessThen([username, setUsername], 4) &&
-      !isBigThen([username, setUsername], 20) &&
-      isValidUsername([username, setUsername])
-    ) {
-      setUsername({
-        ...username,
-        valid: true,
-        error: "",
-        focused: true,
-      });
-    } else return;
-    // Email :
-    if (!isEmpty([email, setEmail]) && isEmail([email, setEmail])) {
-      setEmail({
-        ...email,
-        valid: true,
-        error: "",
-        focused: true,
-      });
-    } else return;
-    // Password :
-    if (
-      !isEmpty([password, setPassword]) &&
-      !isLessThen([password, setPassword], 8)
-    ) {
-      setPassword({
-        ...password,
-        valid: true,
-        error: "",
-        focused: true,
-      });
-    } else return;
-    // Password Confirmation :
-    if (
-      !isEmpty([repeat_password, setRepeat_password]) &&
-      !isLessThen([repeat_password, setRepeat_password], 8) &&
-      areMatch([repeat_password, setRepeat_password], password.value)
-    ) {
-      setRepeat_password({
-        ...repeat_password,
-        valid: true,
-        error: "",
-        focused: true,
-      });
-    } else return;
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-    const res = await auth.register({
-      username: username.value,
-      email: email.value,
-      password: password.value,
+  const schema = yup.object().shape({
+    username: yup
+      .string()
+      .trim()
+      .min(3)
+      .required("You need to provide an username."),
+    email: yup
+      .string()
+      .trim()
+      .email()
+      .required("You need to provide an email."),
+    password: yup.string().min(8).required(),
+    repeated_password: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "Passwords don't match")
+      .required("repeated password is a required field"),
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+
+  const onFormSubmit = async ({ username, email, password }) => {
+    const { data: res } = await registerUser({
+      username,
+      email,
+      password,
     });
+
     console.log(res);
+
+    if (res.ok) {
+      dispatch(
+        authenticate({ isAuth: res.ok, token: res.token, user: res.user })
+      );
+      router.push("/");
+      return setFormError({ error: false, msg: "" });
+    } else {
+      setFormError({ error: true, msg: res.msg });
+    }
   };
 
   return (
     <div className="flex flex-1 justify-center items-center">
       <form
-        className="w-full shadow border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 m-3 sm:mx-8 md:w-[50vw] md:max-w-[30rem]"
+        onSubmit={handleSubmit(onFormSubmit)}
+        className="w-full shadow border border-gray-300 dark:border-gray-700 rounded-lg px-4 py-2 m-4 md:my-8 sm:mx-8 md:w-[50vw] md:max-w-[30rem]"
         dir="ltr"
-        onSubmit={(e) => e.preventDefault()}
       >
         <div className="mb-4">
           <label
@@ -120,32 +96,27 @@ const register = () => {
               id="username"
               className="input"
               placeholder="username..."
-              value={username.value}
-              onChange={(e) =>
-                setUsername({ ...username, value: e.target.value })
-              }
+              {...register("username")}
             />
 
             <div className="absolute pr-1.5 right-0 top-1/2 -translate-y-1/2">
-              {username.focused && username.valid ? (
+              {errors.username?.message ? (
+                <span className="ml-1.5 text-red-500">
+                  <i className="fa-solid fa-exclamation-circle" />
+                </span>
+              ) : (
                 <span className="ml-1.5 text-green-500">
                   <i className="fa-solid fa-circle-check" />
                 </span>
-              ) : (
-                username.focused && (
-                  <span className="ml-1.5 text-red-500">
-                    <i className="fa-solid fa-exclamation-circle" />
-                  </span>
-                )
               )}
             </div>
           </div>
           <div
             className={`mt-1 text-red-500 text-sm ${
-              username.focused && !username.valid ? "visible" : "invisible"
+              errors.username?.message ? "visible" : "invisible"
             }`}
           >
-            {username.error}
+            {errors.username?.message}
           </div>
         </div>
         <div className="mb-4">
@@ -158,34 +129,31 @@ const register = () => {
 
           <div className="relative">
             <input
-              type="email"
+              type="text"
               id="email"
               className="input"
               placeholder="example@gmail.com"
-              value={email.value}
-              onChange={(e) => setEmail({ ...email, value: e.target.value })}
+              {...register("email")}
             />
 
-            <div className="absolute right-0 top-1/2 -translate-y-1/2">
-              {email.focused && email.valid ? (
-                <span className="mr-1.5 text-green-500">
-                  <i className="fa-solid fa-circle-check" />
+            <div className="absolute pr-1.5 right-0 top-1/2 -translate-y-1/2">
+              {errors.email?.message ? (
+                <span className="ml-1.5 text-red-500">
+                  <i className="fa-solid fa-exclamation-circle" />
                 </span>
               ) : (
-                email.focused && (
-                  <span className="mr-1.5 text-red-500">
-                    <i className="fa-solid fa-exclamation-circle" />
-                  </span>
-                )
+                <span className="ml-1.5 text-green-500">
+                  <i className="fa-solid fa-circle-check" />
+                </span>
               )}
             </div>
           </div>
           <div
             className={`mt-1 text-red-500 text-sm ${
-              email.focused && !email.valid ? "visible" : "invisible"
+              errors.email?.message ? "visible" : "invisible"
             }`}
           >
-            {email.error}
+            {errors.email?.message}
           </div>
         </div>
         <div className="mb-4">
@@ -200,13 +168,7 @@ const register = () => {
               type="password"
               id="password"
               className="input"
-              value={password.value}
-              onChange={(e) =>
-                setPassword({
-                  ...password,
-                  value: e.target.value,
-                })
-              }
+              {...register("password")}
             />
             <div className="absolute pr-1.5 right-0 top-1/2 -translate-y-1/2">
               <span
@@ -220,25 +182,23 @@ const register = () => {
                 )}
               </span>
 
-              {password.focused && password.valid ? (
+              {errors.password?.message ? (
+                <span className="ml-1.5 text-red-500">
+                  <i className="fa-solid fa-exclamation-circle" />
+                </span>
+              ) : (
                 <span className="ml-1.5 text-green-500">
                   <i className="fa-solid fa-circle-check" />
                 </span>
-              ) : (
-                password.focused && (
-                  <span className="ml-1.5 text-red-500">
-                    <i className="fa-solid fa-exclamation-circle" />
-                  </span>
-                )
               )}
             </div>
           </div>
           <div
             className={`mt-1 text-red-500 text-sm ${
-              password.focused && !password.valid ? "visible" : "invisible"
+              errors.password?.message ? "visible" : "invisible"
             }`}
           >
-            {password.error}
+            {errors.password?.message}
           </div>
         </div>
         <div className="mb-4">
@@ -253,13 +213,7 @@ const register = () => {
               type="password"
               id="repeat-password"
               className="input"
-              value={repeat_password.value}
-              onChange={(e) =>
-                setRepeat_password({
-                  ...repeat_password,
-                  value: e.target.value,
-                })
-              }
+              {...register("repeated_password")}
             />
 
             <div className="absolute pr-1.5 right-0 top-1/2 -translate-y-1/2">
@@ -273,28 +227,23 @@ const register = () => {
                   <i className="fa-solid fa-eye" />
                 )}
               </span>
-
-              {repeat_password.focused && repeat_password.valid ? (
+              {errors.repeated_password?.message ? (
+                <span className="ml-1.5 text-red-500">
+                  <i className="fa-solid fa-exclamation-circle" />
+                </span>
+              ) : (
                 <span className="ml-1.5 text-green-500">
                   <i className="fa-solid fa-circle-check" />
                 </span>
-              ) : (
-                repeat_password.focused && (
-                  <span className="ml-1.5 text-red-500">
-                    <i className="fa-solid fa-exclamation-circle" />
-                  </span>
-                )
               )}
             </div>
           </div>
           <div
             className={`mt-1 text-red-500 text-sm ${
-              repeat_password.focused && !repeat_password.valid
-                ? "visible"
-                : "invisible"
+              errors.repeated_password?.message ? "visible" : "invisible"
             }`}
           >
-            {repeat_password.error}
+            {errors.repeated_password?.message}
           </div>
         </div>
         <div className="flex items-start mb-4">
@@ -302,7 +251,7 @@ const register = () => {
             <input
               id="terms"
               type="checkbox"
-              value=""
+              defaultChecked={true}
               className="w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800"
             />
           </div>
@@ -313,9 +262,27 @@ const register = () => {
             Remember me.
           </label>
         </div>
-        <button onClick={submitHandler} type="submit" className="btn-purple">
-          Register new account
-        </button>
+
+        {errors.password?.message ? (
+          <div className="text-red-500 text-sm">{errors.password.error}</div>
+        ) : (
+          formError.error && (
+            <div
+              className="flex p-4 my-3 text-sm shadow-sm text-red-600 bg-red-200 rounded dark:bg-red-200 dark:text-red-600"
+              role="alert"
+            >
+              <span className="mr-3">
+                <i className="fa-solid fa-triangle-exclamation"></i>
+              </span>
+              <span className="sr-only">Info</span>
+              <div>
+                <span className="font-medium capitalize">{formError.msg}</span>
+              </div>
+            </div>
+          )
+        )}
+
+        <button className="btn-purple">Register new account</button>
         <div className="mt-4 mb-3 flex justify-center items-center">
           <hr className="w-1/3 border-gray-300 dark:border-gray-700" />
           <div className="px-2 text-gray-600 dark:text-gray-400">OR</div>
@@ -331,7 +298,7 @@ const register = () => {
   );
 };
 
-export default register;
+export default registerPage;
 
 export const getServerSideProps = async ({ req }) => {
   return requireLogout({ req }, () => {

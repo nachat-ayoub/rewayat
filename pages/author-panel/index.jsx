@@ -1,4 +1,4 @@
-import { requireAuthorAuth } from "../../utils";
+import { requireAuthorAuth } from "../../utils/middlewares";
 
 import Container from "../../components/Container";
 

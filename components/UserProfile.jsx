@@ -6,7 +6,7 @@ import Image from "next/image";
 import axios from "axios";
 
 import { Dropdown } from "flowbite-react";
-import { allowedRoles } from "../utils";
+import { allowedRoles } from "../utils/middlewares";
 
 const UserProfile = () => {
   const dispatch = useDispatch();

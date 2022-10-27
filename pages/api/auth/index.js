@@ -1,11 +1,8 @@
-import authFunctions from "../../../services/auth";
+import { isAuth } from "../../../utils/auth";
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    const { auth, user } = authFunctions.isAuth(
-      { req },
-      process.env.JWT_SECRET
-    );
+    const { auth, user } = isAuth({ req }, process.env.JWT_SECRET);
     const { token } = req.cookies;
 
     if (auth) {

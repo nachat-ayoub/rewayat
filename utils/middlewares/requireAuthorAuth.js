@@ -1,4 +1,4 @@
-import { allowedRoles, requireBasicAuth } from "./index";
+import { allowedRoles, requireBasicAuth } from "./";
 
 const requireAuthorAuth = ({ req }, cb) => {
   try {

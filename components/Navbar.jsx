@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { allowedRoles } from "../utils";
+import { allowedRoles } from "../utils/middlewares";
 import Link from "next/link";
 
 import DarkAndLightModeButton from "./DarkAndLightModeButton";

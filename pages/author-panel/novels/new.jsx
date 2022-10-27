@@ -1,23 +1,17 @@
+import { getBase64, requireAuthorAuth } from "../../../utils";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import axios from "axios";
 
 import Container from "../../../components/Container";
-import helpers from "../../../services/helpers";
-import { requireAuthorAuth } from "../../../utils";
-import { useSelector } from "react-redux";
 
 const CreateNovel = () => {
   const { user } = useSelector((state) => state.auth.value);
 
   const schema = yup.object().shape({
     title: yup.string().required(),
-    // slug: yup
-    //   .number()
-    //   .typeError("slug must be a valid number")
-    //   .test("positive", "slug must be positive", (value) => value >= 0)
-    //   .required(),
     story: yup.string().required(),
     image: yup
       .mixed()
@@ -55,7 +49,7 @@ const CreateNovel = () => {
   const createNovel = ({ title, story, image }) => {
     const { token } = user;
 
-    helpers.getBase64(image[0], async (image) => {
+    getBase64(image[0], async (image) => {
       const res = await axios.post(
         process.env.API_URL + "/novels/create",
         {

@@ -1,12 +1,12 @@
 import usePasswordShow from "../../hooks/usePasswordShow";
-import auth from "../../services/auth";
+import { loginUser } from "../../utils/auth";
 import { useState } from "react";
 import Link from "next/link";
 
 import { authenticate } from "../../store/authSlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-import { requireLogout } from "../../utils";
+import { requireLogout } from "../../utils/middlewares";
 
 // <Validation>
 //
@@ -29,25 +29,13 @@ const login = () => {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-
   const schema = yup.object().shape({
     identifier: yup
       .string()
       .trim()
       .min(3)
       .required("You need to provide email or username."),
-    password: yup
-      .string()
-      .min(8)
-      // .matches(/^[a-z]+$/, "Your password should at least contains one letter.")
-      .required(),
+    password: yup.string().min(8).required(),
   });
 
   const {
@@ -59,14 +47,19 @@ const login = () => {
   });
 
   const onFormSubmit = async ({ identifier, password }) => {
-    console.log({ identifier, password });
+    // console.log({ identifier, password });
 
     // ! Trying to login :
-    const data = await auth.login({
+    const response = await loginUser({
       EmailOrUsername: identifier,
       password: password,
     });
-    const res = data?.data;
+
+    const res = response?.data;
+
+    if (res === undefined) {
+      return console.log(`=> response undefined`);
+    }
 
     if (res?.ok) {
       dispatch(

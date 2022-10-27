@@ -1,10 +1,10 @@
-import authHelpers from "../services/auth";
+import { isAuth } from "../auth";
 
-const requireLogout = ({ req }, cb) => {
+const requireBasicAuth = ({ req }, cb) => {
   try {
-    const { auth, user } = authHelpers.isAuth({ req }, process.env.JWT_SECRET);
+    const { auth, user } = isAuth({ req }, process.env.JWT_SECRET);
 
-    if (!auth) {
+    if (auth) {
       return cb({ auth, user });
     }
     return {
@@ -19,4 +19,4 @@ const requireLogout = ({ req }, cb) => {
   }
 };
 
-export default requireLogout;
+export default requireBasicAuth;

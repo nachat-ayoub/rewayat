@@ -1,9 +1,9 @@
-import authFunctions from "../../../services/auth";
-import helpers from "../../../services/helpers";
+import { isAuth } from "../../../utils/auth";
+import { setTokenCookie } from "../../../utils/token";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {
-    const { auth } = authFunctions.isAuth({ req }, process.env.JWT_SECRET);
+    const { auth } = isAuth({ req }, process.env.JWT_SECRET);
 
     if (auth) {
       const { token } = req.body;
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
         return res.json({ ok: false, msg: "Fields Are Required!" });
       }
 
-      helpers.setToken(token, { req, res });
+      setTokenCookie(token, { req, res });
 
       return res.status(200).json({
         message: "success!!",

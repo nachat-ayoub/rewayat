@@ -1,5 +1,6 @@
-import { getImageMainColor, requireBasicAuth } from "../../utils/index";
+import { requireBasicAuth } from "../../utils/middlewares";
 import useToggler from "../../hooks/useToggler";
+import { getImageMainColor } from "../../utils";
 import Image from "next/image";
 
 import Container from "../../components/Container";
@@ -7,7 +8,7 @@ import CustomModal from "../../components/CustomModal";
 import EditUserForm from "../../components/EditUserForm";
 import { useSelector } from "react-redux";
 
-const UserPage = ({ userData, profileColor }) => {
+const UserPage = ({ /* userData, */ profileColor }) => {
   const [isEditModelHidden, showEditModal] = useToggler();
   const user = useSelector((state) => state.auth.value.user);
 
@@ -17,7 +18,7 @@ const UserPage = ({ userData, profileColor }) => {
         <EditUserForm
           isModalHidden={isEditModelHidden}
           toggleModal={showEditModal}
-          user={userData}
+          user={user}
         />
       </CustomModal>
 
@@ -36,10 +37,12 @@ const UserPage = ({ userData, profileColor }) => {
 
         <Image
           className="rounded-full shadow"
-          src={user?.image ?? "/avatar.jpg"}
-          width={"100px"}
-          height={"100px"}
+          src={user?.image}
+          width={100}
+          height={100}
           objectFit={"cover"}
+          alt={`${user?.username ?? "User"} profile picture`}
+          unoptimized
         />
         <h2
           dir="auto"
@@ -53,18 +56,7 @@ const UserPage = ({ userData, profileColor }) => {
         <p dir="auto" className="text-lg text-justify font-semibold">
           <span className="">{"❝ "}</span>
           <span className={`${profileColor.isDark && "text-gray-100"}`}>
-            {user?.bio + " "}
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nobis
-            itaque incidunt, nulla odio pariatur quas eaque nesciunt error
-            corrupti tempora eum quae voluptas ducimus? Veritatis cumque
-            voluptate totam possimus? Reiciendis. Lorem ipsum dolor sit amet
-            consectetur adipisicing elit. Nobis itaque incidunt, nulla odio
-            pariatur quas eaque nesciunt error corrupti tempora eum quae
-            voluptas ducimus? Veritatis cumque voluptate totam possimus?
-            Reiciendis. Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Nobis itaque incidunt, nulla odio pariatur quas eaque nesciunt error
-            corrupti tempora eum quae voluptas ducimus? Veritatis cumque
-            voluptate totam possimus? Reiciendis.
+            {user?.bio}
           </span>
           <span className="">{" ❞"}</span>
         </p>
@@ -75,20 +67,36 @@ const UserPage = ({ userData, profileColor }) => {
 
 export default UserPage;
 
-export const getServerSideProps = async ({ req }) => {
+export const getServerSideProps = async ({ req, params }) => {
   return requireBasicAuth({ req }, async ({ user }) => {
-    // user.image =
-    //   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNrixGb5yc8HjoQTNj_E2E61zqr61EWHXbDJR3yNqxm7zUYPk7nmGJi8cVjmFMiYRMTz0&usqp=CAU";
+    if (params?.username !== user?.username) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: "/auth/" + user?.username,
+        },
+        props: {},
+      };
+    }
+
     const imagePath =
       user.image === "/avatar.jpg"
         ? "http://" + req.headers.host + user.image
         : user.image;
 
-    const profileColor = await getImageMainColor(imagePath);
+    const profileColor = undefined; // await getImageMainColor(imagePath);
     return {
       props: {
         userData: user,
-        profileColor,
+        profileColor: profileColor ?? {
+          value: [225, 225, 225, 255],
+          rgb: "rgb(225,225,225)",
+          rgba: "rgba(225,225,225,1)",
+          hex: "#e1e1e1",
+          hexa: "#e1e1e1ff",
+          isDark: false,
+          isLight: true,
+        },
       },
     };
   });

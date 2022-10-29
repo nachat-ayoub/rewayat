@@ -1,20 +1,16 @@
+import { useDispatch, useSelector } from "react-redux";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { authenticate } from "../store/authSlice";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { getBase64 } from "../utils";
 import * as yup from "yup";
 import axios from "axios";
-import { authenticate } from "../store/authSlice";
-import { useEffect } from "react";
 
 const EditUserForm = ({ user, isModalHidden, toggleModal }) => {
-  const [userInfoSaved, setUserInfoSaved] = useState(null);
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (isModalHidden) {
-      setUserInfoSaved(null);
-    }
-  }, [isModalHidden]);
+
+  const [userInfoSaved, setUserInfoSaved] = useState(null);
 
   const schema = yup.object().shape({
     username: yup.string().trim().min(3).required(),
@@ -40,6 +36,7 @@ const EditUserForm = ({ user, isModalHidden, toggleModal }) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -50,40 +47,50 @@ const EditUserForm = ({ user, isModalHidden, toggleModal }) => {
     resolver: yupResolver(schema),
   });
 
+  useEffect(() => {
+    if (isModalHidden) {
+      setUserInfoSaved(null);
+    }
+    if (user.username !== "") {
+      reset({
+        username: user.username,
+        email: user.email,
+        bio: user.bio,
+      });
+    }
+  }, [isModalHidden, user]);
+
   // TODO: Update User Info :
   const updateUserInfo = async (data) => {
     try {
       setUserInfoSaved(false);
 
-      if (data.image.length !== 0) {
-        // TODO: Upload new profile image.
-      } else {
-        data.image = null;
-      }
-
-      const { data: res } = await axios.put(
-        `${process.env.API_URL}/auth/${user?.username}/update`,
-        data,
-        {
-          headers: {
-            token: user?.token,
-          },
-        }
-      );
-
-      if (res.ok) {
-        const response = await axios.post("/api/auth/authenticate", {
-          token: res?.userToken,
-        });
-
-        dispatch(
-          authenticate({ isAuth: res.ok, token: user?.token, user: res.user })
+      getBase64(data.image[0], async (image) => {
+        data.image = image;
+        const { data: res } = await axios.put(
+          `${process.env.API_URL}/auth/${user?.username}/update`,
+          data,
+          {
+            headers: {
+              token: user?.token,
+            },
+          }
         );
-        setUserInfoSaved(res.ok ?? null);
-        toggleModal();
-      } else {
-        setUserInfoSaved(res.ok ?? null);
-      }
+
+        if (res.ok) {
+          const response = await axios.post("/api/auth/authenticate", {
+            token: res?.userToken,
+          });
+
+          dispatch(
+            authenticate({ isAuth: res.ok, token: user?.token, user: res.user })
+          );
+          setUserInfoSaved(res.ok ?? null);
+          toggleModal();
+        } else {
+          setUserInfoSaved(res.ok ?? null);
+        }
+      });
     } catch (error) {
       console.log(error);
     }

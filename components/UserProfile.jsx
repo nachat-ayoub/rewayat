@@ -46,6 +46,7 @@ const UserProfile = () => {
           height={"30px"}
           objectFit="cover"
           className="rounded-full"
+          unoptimized
         />
       </div>
     </div>

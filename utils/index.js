@@ -1,6 +1,8 @@
 import axios from "axios";
 
 const getBase64 = (file, cb) => {
+  if (!file) return cb(null);
+
   let reader = new FileReader();
   reader.readAsDataURL(file);
   reader.onload = function () {

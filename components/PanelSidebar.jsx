@@ -316,7 +316,7 @@ const PanelSidebar = ({ children }) => {
 
           <div className="">
             <Link href={"/"}>
-              <a className="h-full text-primary-300 flex items-center justify-center">
+              <a className="h-full text-primary-100 flex items-center justify-center">
                 <BigLogoSvg />
               </a>
             </Link>

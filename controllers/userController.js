@@ -155,7 +155,7 @@ module.exports.updateUser = async (req, res) => {
       }
     }
 
-    const user = await User.findOne({ username: req.params.username });
+    let user = await User.findOne({ username: req.params.username });
     if (!user) {
       return res.json({
         action: "updateUser",
@@ -172,9 +172,17 @@ module.exports.updateUser = async (req, res) => {
     }
 
     if (current_user.role === "admin") {
-      await user.updateOne({ role, username, image, bio });
+      user = await User.findOneAndUpdate(
+        { username: req.params.username },
+        { role, username, image, bio },
+        { new: true }
+      );
     } else {
-      await user.updateOne({ username, image, bio });
+      user = await User.findOneAndUpdate(
+        { username: req.params.username },
+        { username, image, bio },
+        { new: true }
+      );
     }
 
     const userInfo = {

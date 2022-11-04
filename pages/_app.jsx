@@ -22,13 +22,21 @@ function MyApp({ Component, pageProps, router }) {
   };
 
   useEffect(() => {
+    // Check user :
     fetchUser();
   }, []);
-  // Check user :
 
-  return (router.pathname.startsWith("/author-panel") ||
-    router.pathname.startsWith("/admin-panel")) &&
-    router.pathname !== "/_error" ? (
+  const isPanelLayout = (paths) => {
+    let pathExist = false;
+    paths.map((path) => {
+      if (!pathExist) {
+        pathExist = router.pathname.startsWith(path);
+      }
+    });
+    return pathExist && router.pathname !== "/_error";
+  };
+
+  return isPanelLayout(["/panel"]) ? (
     <PanelLayout>
       <Component {...pageProps} />
     </PanelLayout>

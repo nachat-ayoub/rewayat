@@ -1,9 +1,9 @@
+import DarkAndLightModeButton from "./DarkAndLightModeButton";
 import useDropdownMenu from "../hooks/useDropdownMenu";
 import { useSelector } from "react-redux";
+import BigLogoSvg from "./BigLogoSvg";
 import Image from "next/image";
 import Link from "next/link";
-import BigLogoSvg from "./BigLogoSvg";
-import DarkAndLightModeButton from "./DarkAndLightModeButton";
 
 const PanelSidebar = ({ children }) => {
   const { user } = useSelector((state) => state.auth.value);
@@ -60,6 +60,7 @@ const PanelSidebar = ({ children }) => {
                   width={"32px"}
                   height={"32px"}
                   objectFit={"cover"}
+                  unoptimized
                 />
                 <h3
                   className={`capitalize text-base ${
@@ -173,7 +174,7 @@ const PanelSidebar = ({ children }) => {
                 }`}
               >
                 <li className="cursor-pointer hover:bg-primary-900 hover:text-white transition-all duration-150 ease-in">
-                  <Link href={`/${user?.role}-panel/novels/new`}>
+                  <Link href={`/panel/novels/new`}>
                     <a className="p-4 w-full h-full flex items-center gap-4">
                       <span className="w-3">
                         <i className="fa-solid fa-square-plus"></i>
@@ -183,7 +184,7 @@ const PanelSidebar = ({ children }) => {
                   </Link>
                 </li>
                 <li className="cursor-pointer hover:bg-primary-900 hover:text-white transition-all duration-150 ease-in">
-                  <Link href={`/${user?.role}-panel/novels`}>
+                  <Link href={`/panel/novels`}>
                     <a className="p-4 w-full h-full flex items-center gap-4">
                       <span className="w-3">
                         <i className="fa-solid fa-eye"></i>
@@ -252,7 +253,7 @@ const PanelSidebar = ({ children }) => {
                 }`}
               >
                 <li className="cursor-pointer hover:bg-primary-900 hover:text-white transition-all duration-150 ease-in">
-                  <Link href={`/${user?.role}-panel/chapters/new`}>
+                  <Link href={`/panel/chapters/new`}>
                     <a className="p-4 w-full h-full flex items-center gap-4">
                       <span className="w-3">
                         <i className="fa-solid fa-square-plus"></i>
@@ -262,7 +263,7 @@ const PanelSidebar = ({ children }) => {
                   </Link>
                 </li>
                 <li className="cursor-pointer hover:bg-primary-900 hover:text-white transition-all duration-150 ease-in">
-                  <Link href={`/${user?.role}-panel/chapters`}>
+                  <Link href={`/panel/chapters`}>
                     <a className="p-4 w-full h-full flex items-center gap-4">
                       <span className="w-3">
                         <i className="fa-solid fa-eye"></i>
@@ -316,7 +317,7 @@ const PanelSidebar = ({ children }) => {
 
           <div className="">
             <Link href={"/"}>
-              <a className="h-full text-primary-100 flex items-center justify-center">
+              <a className="h-full text-primary-200 flex items-center justify-center">
                 <BigLogoSvg />
               </a>
             </Link>

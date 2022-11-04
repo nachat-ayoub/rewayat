@@ -23,7 +23,7 @@ export const authSlice = createSlice({
       };
     },
     logout: (state) => {
-      state = initialState;
+      state.value = initialState.value;
     },
   },
 });

@@ -52,6 +52,9 @@ const UserPage = ({ /* userData, */ profileColor }) => {
             <i className="fa-solid fa-at" />
           </span>
           <span className="font-bold">{user?.username}</span>
+          <span className="text-base font-semibold text-muted">
+            ({user?.role})
+          </span>
         </h2>
         <p dir="auto" className="text-lg text-justify font-semibold">
           <span className="">{"❝ "}</span>

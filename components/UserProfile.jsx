@@ -1,12 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
+import { allowedRoles } from "../utils/middlewares";
 import { logout } from "../store/authSlice";
+import { Dropdown } from "flowbite-react";
 import { useRouter } from "next/router";
-
 import Image from "next/image";
 import axios from "axios";
-
-import { Dropdown } from "flowbite-react";
-import { allowedRoles } from "../utils/middlewares";
 
 const UserProfile = () => {
   const dispatch = useDispatch();
@@ -30,7 +28,7 @@ const UserProfile = () => {
         </Dropdown.Item>
 
         {allowedRoles.includes(user.role) && (
-          <Dropdown.Item onClick={() => router.push("/author-panel")}>
+          <Dropdown.Item onClick={() => router.push("/panel")}>
             لوحة التحكم
           </Dropdown.Item>
         )}

@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux";
-import { allowedRoles } from "../utils/middlewares";
 import Link from "next/link";
 
 import DarkAndLightModeButton from "./DarkAndLightModeButton";
@@ -24,13 +23,7 @@ const Navbar = () => {
       <div className="flex gap-3 justify-center items-center">
         <div className="mr-6 flex gap-3 justify-center items-center">
           {auth.isAuth ? (
-            <>
-              {/* Auth Links (Crud) */}
-              {allowedRoles.includes(auth.user.role) && (
-                <div className="flex justify-center items-center"></div>
-              )}
-              <UserProfile />
-            </>
+            <UserProfile />
           ) : (
             <>
               <Link href={"/auth/register"}>

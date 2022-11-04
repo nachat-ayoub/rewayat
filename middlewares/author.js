@@ -8,7 +8,9 @@ module.exports = async (req, res, next) => {
     //  DONE: check if author is the same author that wrote the novel or the chapter
     if (user.role === "author") {
       const novelSlug = req.params?.slug || req.params?.novelSlug;
+
       console.log("\n\n==>>>>>>>>>>>>>>>>>>>>>=", novelSlug);
+
       if (!novelSlug) return next();
       if (req.user.novels.some((novel) => novel.slug === novelSlug)) {
         return next();

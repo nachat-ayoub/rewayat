@@ -16,7 +16,11 @@ const novelSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      required: true,
+      default: "/novel-placeholder-image.jpg",
+    },
+    views: {
+      type: Number,
+      default: 0,
     },
     genres: [
       {

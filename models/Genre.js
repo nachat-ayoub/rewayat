@@ -16,7 +16,6 @@ const genreSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Novel",
-        unique: true,
       },
     ],
   },

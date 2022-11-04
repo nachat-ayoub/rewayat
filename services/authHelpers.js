@@ -22,11 +22,12 @@ module.exports.hashPassword = async (password) => {
   return await bcrypt.hash(password, salt);
 };
 
-module.exports.verifyToken = (token) =>
-  jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+module.exports.verifyToken = (token) => {
+  return jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
     if (err) {
       return { auth: false, decodedToken: null };
     } else {
       return { auth: true, decodedToken };
     }
   });
+};

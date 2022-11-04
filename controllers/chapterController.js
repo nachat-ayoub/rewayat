@@ -1,4 +1,4 @@
-const slugify = require("slugify");
+const {slugify} = require("../services/");
 const Chapter = require("../models/Chapter");
 const Novel = require("../models/Novel");
 const User = require("../models/User");

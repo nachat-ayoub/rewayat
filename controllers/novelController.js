@@ -1,10 +1,10 @@
-const { default: mongoose } = require("mongoose");
-const slugify = require("slugify");
+const { removeDuplicateGenres } = require("../services/helpersFunctions");
+const { cloudinaryUpload } = require("../services/cloudinary");
+const { slugify, checkAuth } = require("../services");
 const Genre = require("../models/Genre");
 const Novel = require("../models/Novel");
 const User = require("../models/User");
-const { cloudinaryUpload } = require("../services/cloudinary");
-const { removeDuplicateGenres } = require("../services/helpersFunctions");
+const mongoose = require("mongoose");
 
 // ! Get All Novels [X]
 module.exports.getAllNovels = async (req, res) => {
@@ -64,6 +64,11 @@ module.exports.getNovel = async (req, res) => {
         ok: false,
       });
 
+    if (await checkAuth()) {
+      novel.views += 1;
+      await novel.save();
+    }
+
     res.json({ action: "getNovel", slug, novel });
   } catch (error) {
     console.log(error);
@@ -95,30 +100,37 @@ module.exports.createNovel = async (req, res) => {
 
     for (let i = 0; i < req.body?.genres.length; i++) {
       const genre = req.body?.genres[i];
+      genre.slug = slugify(genre.name);
 
-      const genreExist = await Genre.findOne({ name: genre.name });
+      const genreExist = await Genre.findOne({
+        $or: [{ name: genre.name }, { slug: genre.slug }],
+      });
       if (genreExist) {
         req.body.genres[i] = genreExist._id;
         genres.push(genreExist);
       } else {
+        console.log("Creating new genre: '" + genre.name + "'");
         const newGenre = await Genre.create({
           name: genre.name,
-          slug: slugify(genre.name),
+          slug: genre.slug,
         });
         req.body.genres[i] = newGenre._id;
         genres.push(newGenre);
       }
     }
 
+    console.log({ bodyGenres: req.body?.genres });
+
     const { url: image } = await cloudinaryUpload(req.body?.image);
 
     const user = await User.findById(req.user.id);
     const novel = await Novel.create({ ...req.body, slug, image });
 
-    genres.map(async (genre) => {
-      genre.novels.push(novel._id);
+    for (let j = 0; j < genres.length; j++) {
+      const genre = genres[j];
+      genre?.novels.push(novel._id);
       await genre.save();
-    });
+    }
 
     novel.publisher = user._id;
     await novel.save();

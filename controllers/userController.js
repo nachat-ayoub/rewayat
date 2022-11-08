@@ -20,9 +20,10 @@ module.exports.getAllUsers = async (req, res) => {
 module.exports.getUser = async (req, res) => {
   try {
     const { username } = req.params;
-    const user = await User.findOne({ username }, "-password -role").populate(
-      "novels"
-    );
+    const user = await User.findOne({ username }, "-password -role").populate({
+      path: "novels",
+      options: { sort: { createdAt: -1 } },
+    });
     if (user) {
       return res.json({ action: "getUser", ok: true, user });
     }

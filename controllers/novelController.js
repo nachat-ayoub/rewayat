@@ -10,6 +10,7 @@ const mongoose = require("mongoose");
 module.exports.getAllNovels = async (req, res) => {
   try {
     const novels = await Novel.find({})
+      .sort({ createdAt: -1 })
       .populate("chapters")
       .populate("genres", "_id name slug");
     res.json({
@@ -64,7 +65,7 @@ module.exports.getNovel = async (req, res) => {
         ok: false,
       });
 
-    if (await checkAuth()) {
+    if (await checkAuth(req)) {
       novel.views += 1;
       await novel.save();
     }

@@ -1,9 +1,20 @@
 import { Modal } from "flowbite-react";
 
-const CustomModal = ({ children, title, show, onClose }) => {
+const CustomModal = ({ children, title, show, onClose, popup, size }) => {
   return (
-    <Modal popup={true} show={show} onClose={onClose}>
-      {title ? <Modal.Header>{title}</Modal.Header> : <Modal.Header />}
+    <Modal
+      show={show}
+      onClose={onClose}
+      popup={popup ?? true}
+      size={size ?? "2xl"}
+    >
+      {title ? (
+        <Modal.Header className="text-center">
+          <div className="text-base text-center w-full">{title}</div>
+        </Modal.Header>
+      ) : (
+        <Modal.Header />
+      )}
       <Modal.Body>{children}</Modal.Body>
     </Modal>
   );

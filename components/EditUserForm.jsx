@@ -101,7 +101,7 @@ const EditUserForm = ({ user, isModalHidden, toggleModal }) => {
     <form
       dir="ltr"
       onSubmit={handleSubmit(updateUserInfo)}
-      className="w-full py-2"
+      className="w-full py-2 dark:text-white"
     >
       {/* 🧑‍💻 it's me nachat ayoub a full stack web developer. */}
       <div className="max-h-[75vh] overflow-auto">

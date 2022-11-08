@@ -15,7 +15,7 @@ const Navbar = () => {
     >
       <div className="h-14">
         <Link href={"/"}>
-          <a className="h-full text-primary-50 flex items-center justify-center">
+          <a className="h-full text-gray-200 flex items-center justify-center">
             <BigLogoSvg />
           </a>
         </Link>

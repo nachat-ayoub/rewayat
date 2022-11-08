@@ -17,7 +17,7 @@ const authorNovelsPage = ({ novels }) => {
 							No novels yet!
 						</h1>
 					) : (
-						<div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
+						<div className="flex flex-wrap gap-8 items-center justify-center">
 							{novels.map((novel) => (
 								<NovelCard key={novel.slug} novel={novel} />
 							))}

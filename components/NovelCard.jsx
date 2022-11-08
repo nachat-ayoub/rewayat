@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 
-const NovelCard = ({ novel }) => {
+const NovelCard = ({ novel, className }) => {
   return (
-    <div className="w-52">
+    <div className={`w-52 ${className ?? ""}`}>
       <div className="w-full h-72 bg-Gray rounded-lg shadow-lg overflow-hidden">
         <Link href={"/novels/" + novel.slug}>
           <a>

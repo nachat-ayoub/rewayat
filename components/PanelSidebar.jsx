@@ -23,7 +23,7 @@ const PanelSidebar = ({ children }) => {
             toggleNovelDropdown({ init: true });
           }
         }}
-        className={`z-30 shadow-sm md:w-60 md:static md:h-auto overflow-hidden bg-primary-700 text-gray-200 ${
+        className={`z-30 shadow-sm md:w-60 md:static md:h-auto overflow-hidden bg-primary-700 text-gray-100 ${
           isSideNavOpen !== null && isSideNavOpen
             ? "fixed h-screen w-60"
             : "group w-0 md:w-16 md:animate-closeFromLeft md:hover:animate-openFromRight"

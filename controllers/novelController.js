@@ -11,8 +11,12 @@ module.exports.getAllNovels = async (req, res) => {
   try {
     const novels = await Novel.find({})
       .sort({ createdAt: -1 })
-      .populate("chapters")
+      .populate({
+        path: "chapters",
+        options: { sort: { createdAt: -1 } },
+      })
       .populate("genres", "_id name slug");
+
     res.json({
       action: "getAllNovels",
       count: novels.length,
@@ -55,6 +59,11 @@ module.exports.getNovel = async (req, res) => {
     const { slug } = req.params;
     const novel = await Novel.findOne({ slug })
       .populate("genres")
+      .populate({
+        path: "chapters",
+        options: { sort: { createdAt: -1 } },
+        select: "_id slug title createdAt updatedAt",
+      })
       .populate("publisher", "username email image bio createdAt updatedAt");
 
     if (!novel)

@@ -1,4 +1,4 @@
-const {slugify} = require("../services/");
+const { slugify } = require("../services/");
 const Chapter = require("../models/Chapter");
 const Novel = require("../models/Novel");
 const User = require("../models/User");
@@ -111,7 +111,7 @@ module.exports.createChapter = async (req, res) => {
     const novelSlug = req.params?.novelSlug;
     const { title, slug, content, published } = req.body;
 
-    if ((!title, !content, !slug)) {
+    if (!title || !content || isNaN(slug) || slug < 0) {
       return res.status(400).json({
         action: "createChapter",
         ok: false,

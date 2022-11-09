@@ -32,4 +32,9 @@ const isRTL = (text) => {
   return rtlDirCheck.test(text);
 };
 
-export { getBase64, getImageMainColor, isRTL };
+const formatNumber = (number, lang) => {
+  const formatter = Intl.NumberFormat(lang ?? "en", { notation: "compact" });
+  return formatter.format(number);
+};
+
+export { getBase64, getImageMainColor, isRTL, formatNumber };

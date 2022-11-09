@@ -9,7 +9,7 @@ const authorNovelsPage = ({ novels }) => {
 			<div className="">
 				<h1 className="mb-6 text-2xl font-semibold">روايات أضفتها :</h1>
 				<div className="">
-					{!novels.length ? (
+					{novels.length === 0 ? (
 						<h1
 							dir="ltr"
 							className="text-center text-2xl font-semibold"

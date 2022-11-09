@@ -1,7 +1,7 @@
 import { requireAuthorAuth } from "../../../utils/middlewares";
+import useLoadingPopup from "../../../hooks/useLoadingPopup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getBase64, isRTL } from "../../../utils";
-import useToggler from "../../../hooks/useToggler";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
@@ -9,17 +9,14 @@ import { useRouter } from "next/router";
 import * as yup from "yup";
 import axios from "axios";
 
-import CustomModal from "../../../components/CustomModal";
 import LinkButton from "../../../components/LinkButton";
 import Container from "../../../components/Container";
-import { Spinner, Alert } from "flowbite-react";
 
 const CreateNovel = ({ genres }) => {
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [filteredGenres, setFilteredGenres] = useState([]);
   const [genreInput, setGenreInput] = useState("");
-
-  const [isLoading, showIsLoading] = useToggler(false);
+  const { RenderLoadingPopup, toggleLoadingPopup } = useLoadingPopup();
 
   const { user } = useSelector((state) => state.auth.value);
   const router = useRouter();
@@ -56,7 +53,7 @@ const CreateNovel = ({ genres }) => {
   });
 
   const createNewNovel = ({ title, story, image }) => {
-    showIsLoading();
+    toggleLoadingPopup();
     const { token } = user;
     getBase64(image[0], async (image) => {
       const res = await axios.post(
@@ -75,8 +72,10 @@ const CreateNovel = ({ genres }) => {
       );
 
       if (res?.data?.ok) {
-        return router.push("/panel/novels");
-        showIsLoading();
+        setTimeout(() => {
+          router.push("/panel/novels");
+          toggleLoadingPopup();
+        }, 1000);
       }
     });
   };
@@ -111,29 +110,7 @@ const CreateNovel = ({ genres }) => {
 
   return (
     <Container>
-      {/* Loading State */}
-      <CustomModal size={"md"} show={isLoading} onClose={showIsLoading}>
-        <div className="flex flex-col gap-3 justify-center items-center py-4">
-          <Spinner
-            color="purple"
-            size="xl"
-            aria-label="creating new novel..."
-          />
-          <h3 className="text-lg dark:text-white">Creating Novel...</h3>
-          <div className="w-full mt-4 shadow">
-            <Alert color="warning" rounded={true}>
-              <span>
-                <span className="font-bold">
-                  <i className="fa-solid fa-triangle-exclamation" />
-                </span>{" "}
-                This operation may take some time.
-              </span>
-            </Alert>
-          </div>
-        </div>
-      </CustomModal>
-      {/* Loading State */}
-
+      <RenderLoadingPopup />
       <div className="h-full w-full flex justify-center items-center flex-col">
         <div
           dir="ltr"
@@ -195,7 +172,7 @@ const CreateNovel = ({ genres }) => {
                   <ul
                     role="tablist"
                     id="genresList"
-                    className="bg-secondary-100 shadow border border-secondary-300 rounded-b absolute w-full top-full overflow-hidden"
+                    className="bg-secondary-100 dark:text-Black shadow border border-secondary-300 rounded-b absolute w-full top-full overflow-hidden"
                   >
                     {filteredGenres.map((genre, i) => (
                       <li

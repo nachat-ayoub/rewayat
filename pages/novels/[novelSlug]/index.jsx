@@ -1,5 +1,6 @@
 import { useWindowSize } from "use-window-size-hook";
 import { useEffect, useRef, useState } from "react";
+import { formatNumber } from "../../../utils";
 import { isAuth } from "../../../utils/auth";
 import axios from "axios";
 
@@ -21,43 +22,109 @@ const NovelPage = ({ novel }) => {
   const { width } = useWindowSize();
   return (
     <div className="w-full h-full">
-      <div className="relative w-full">
-        {/* Content */}
-        <div className="absolute top-0 left-0 z-10 w-full h-full text-Black dark:text-white md:text-white">
-          <div ref={divRef}>
-            <NovelInfo
-              toggleStoryHidden={toggleStoryHidden}
-              storyHidden={storyHidden}
-              novel={novel}
-            />
+      <div className="w-full h-full">
+        <div className="relative w-full">
+          {/* Content */}
+          <div className="absolute top-0 left-0 z-10 w-full h-full text-Black dark:text-white md:text-white">
+            <div ref={divRef}>
+              <NovelInfo
+                toggleStoryHidden={toggleStoryHidden}
+                storyHidden={storyHidden}
+                novel={novel}
+              />
+            </div>
+          </div>
+          <ClientOnly>
+            <div
+              className="w-full overflow-hidden"
+              style={{ height: `${width < 768 ? 190 : height}px` }}
+            >
+              <div
+                style={{
+                  backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.8) 100%),
+                url("${novel.image}")`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                }}
+                className={`w-full h-full scale-110 blur-sm text-Black dark:text-white md:text-white`}
+              />
+
+              <NovelInfo storyHidden={storyHidden} novel={novel} />
+            </div>
+          </ClientOnly>
+        </div>
+        <NovelInfo
+          novel={novel}
+          storyHidden={storyHidden}
+          toggleStoryHidden={toggleStoryHidden}
+          mobileView
+        />
+      </div>
+      <div className="w-full">
+        <div className="w-full flex justify-between items-center gap-4 px-8">
+          <LinkButton
+            className="px-8 py-3"
+            href={`/novels/${novel.slug}/${novel.chapters.at(0).slug}`}
+          >
+            الفصل الاول
+          </LinkButton>
+          <LinkButton
+            className="px-8 py-3"
+            href={`/novels/${novel.slug}/${novel.chapters.at(-1).slug}`}
+          >
+            الفصل الاخير
+          </LinkButton>
+        </div>
+        <div className="w-full p-8">
+          <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
+            <table className="w-full text-sm text-right text-gray-500 dark:text-gray-400">
+              <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
+                <tr>
+                  <th
+                    onClick={() => {
+                      novel.chapters.reverse();
+                    }}
+                    scope="col"
+                    className="py-3 px-6 cursor-pointer"
+                  >
+                    الفصل
+                    <span className="inline-block p-2 rotate-90 cursor-pointer">
+                      <i className="fa-solid fa-right-left" />
+                    </span>
+                  </th>
+                  <th scope="col" className="py-3 px-6">
+                    عنوان الفصل
+                  </th>
+                  <th scope="col" className="py-3 px-6">
+                    تاريخ النشر
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {/* Row */}
+                {novel.chapters.length > 0 &&
+                  novel.chapters.map((chapter, i) => (
+                    <tr
+                      key={chapter.slug + "-" + i}
+                      className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                      <th
+                        scope="row"
+                        className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                      >
+                        الفصل {chapter.slug}
+                      </th>
+                      <td className="py-4 px-6">{chapter.title}</td>
+                      <td className="py-4 px-6">{chapter.createdAt}</td>
+                    </tr>
+                  ))}
+                {/*  */}
+              </tbody>
+            </table>
           </div>
         </div>
-        <ClientOnly>
-          <div
-            className="w-full overflow-hidden"
-            style={{ height: `${width < 768 ? 190 : height}px` }}
-          >
-            <div
-              style={{
-                backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.55) 50%, rgba(0, 0, 0, 0.8) 100%),
-                url("${novel.image}")`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-              }}
-              className={`w-full h-full scale-110 blur-sm text-Black dark:text-white md:text-white`}
-            />
-
-            <NovelInfo storyHidden={storyHidden} novel={novel} />
-          </div>
-        </ClientOnly>
       </div>
-      <NovelInfo
-        novel={novel}
-        storyHidden={storyHidden}
-        toggleStoryHidden={toggleStoryHidden}
-        mobileView
-      />
     </div>
   );
 };
@@ -82,7 +149,7 @@ const NovelInfo = ({ novel, storyHidden, toggleStoryHidden, mobileView }) => {
         />
 
         <div className={`mt-24 md:mt-0`}>
-          <h1 className="text-2xl font-bold my-3 md:mt-0 text-center md:text-justify">
+          <h1 className="text-2xl capitalize font-bold my-3 md:mt-0 text-center md:text-justify">
             {novel.title}
           </h1>
           <table className="">
@@ -123,13 +190,15 @@ const NovelInfo = ({ novel, storyHidden, toggleStoryHidden, mobileView }) => {
               {/* Views */}
               <tr className="align-top text-right">
                 <th className="pl-4 py-2 whitespace-nowrap">المشاهدات :</th>
-                <td className="py-2 font-semibold">{novel.views}</td>
+                <td className="py-2 font-semibold">
+                  {formatNumber(novel.views)}
+                </td>
               </tr>
               {/* Genres */}
               <tr className="align-top text-right">
                 <th className="pl-4 py-2 whitespace-nowrap">التصنيفات :</th>
                 <td className="relative py-2 font-semibold">
-                  <div className="invisibles flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-1.5">
                     {novel.genres.length &&
                       novel.genres.map((genre) => (
                         <LinkButton
@@ -154,17 +223,12 @@ const NovelInfo = ({ novel, storyHidden, toggleStoryHidden, mobileView }) => {
 
 export const getServerSideProps = async ({ req, params }) => {
   const { user } = isAuth({ req }, process.env.JWT_SECRET);
-  let novel;
 
-  // if (auth) {
-  const { data } = await axios.get(
-    process.env.API_URL + "/novels/" + params.novelSlug,
-    {
-      headers: { token: user?.token ?? "" },
-    }
-  );
-
-  novel = data?.novel;
+  const {
+    data: { novel },
+  } = await axios.get(process.env.API_URL + "/novels/" + params.novelSlug, {
+    headers: { token: user?.token ?? "" },
+  });
 
   return {
     props: {

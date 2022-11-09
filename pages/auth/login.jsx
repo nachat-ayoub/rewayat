@@ -184,12 +184,7 @@ const login = () => {
           </div>
           <div className="flex items-start mb-6">
             <div className="flex items-center h-5">
-              <input
-                id="terms"
-                type="checkbox"
-                defaultChecked={true}
-                className="cursor-pointer w-4 h-4 bg-gray-50 rounded border border-gray-300 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 checked:bg-primary-600 dark:checked:bg-primary-400"
-              />
+              <input id="terms" type="checkbox" defaultChecked={true} />
             </div>
             <label
               htmlFor="terms"

@@ -1,8 +1,8 @@
 import { useState } from "react";
 
 export default function useToggler(initial_state) {
-  const [hidden, setHidden] = useState(initial_state ?? true);
-  const toggle = () => setHidden(!hidden);
+  const [shown, setShown] = useState(initial_state ?? true);
+  const toggle = () => setShown(!shown);
 
-  return [hidden, toggle];
+  return [shown, toggle, setShown];
 }

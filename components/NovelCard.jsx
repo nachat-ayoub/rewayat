@@ -32,17 +32,17 @@ const NovelCard = ({ novel, className }) => {
         {novel.chapters.length > 0 && (
           <div className="flex flex-col">
             {novel.chapters.length >= 3
-              ? novel.chapters.slice(-3).map((chapter) => (
+              ? novel.chapters.slice(-3).map((chapter, i) => (
                   <Link
-                    key={chapter.slug}
+                    key={chapter.slug + "-" + i}
                     href={`/novels/${novel.slug}/${chapter.slug}`}
                   >
                     <a className=""> {chapter.slug} </a>
                   </Link>
                 ))
-              : novel.chapters.map((chapter) => (
+              : novel.chapters.map((chapter, i) => (
                   <Link
-                    key={chapter.slug}
+                    key={chapter.slug + "-" + i}
                     href={`/novels/${novel.slug}/${chapter.slug}`}
                   >
                     <a className=""> {chapter.slug} </a>

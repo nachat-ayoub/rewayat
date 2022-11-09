@@ -6,6 +6,10 @@
   input[type="file"]::file-selector-button {
     @apply bg-primary-600 hover:bg-primary-800 dark:bg-primary-400 dark:hover:bg-primary-600;
   }
+  input[type="checkbox"] {
+    @apply cursor-pointer w-4 h-4 bg-gray-50 rounded border border-gray-300 dark:bg-gray-700 dark:border-gray-600 dark:ring-offset-gray-800 checked:bg-primary-600 dark:checked:bg-primary-400 
+      focus:ring-2 focus:ring-primary-300 dark:focus:ring-primary-600;
+  }
 }
 
 @layer components {

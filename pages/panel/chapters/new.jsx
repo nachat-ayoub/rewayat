@@ -36,15 +36,15 @@ const newChapter = ({ novels, user }) => {
 	const createNewChapter = async (data) => {
 		try {
 			openLoadingPopup();
-			const res = { ok: true }; // await axios.post(
-			// 	`${process.env.API_URL}/novels/${data.novel}/create`,
-			// 	data,
-			// 	{
-			// 		headers: {
-			// 			token: user.token,
-			// 		},
-			// 	}
-			// );
+			const res = await axios.post(
+				`${process.env.API_URL}/novels/${data.novel}/create`,
+				data,
+				{
+					headers: {
+						token: user.token,
+					},
+				}
+			);
 
 			if (res.ok) {
 				setTimeout(() => {

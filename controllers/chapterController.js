@@ -73,7 +73,7 @@ module.exports.getChapter = async (req, res) => {
       if (ch.slug === chapter.slug) {
         const dummyChapter = {
           title: "#",
-          slug: 0,
+          slug: "#",
           content: "#",
           createdAt: "#",
           updatedAt: "#",

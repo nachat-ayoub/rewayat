@@ -9,9 +9,9 @@ import axios from "axios";
 import Container from "../../../components/Container";
 
 const newChapter = ({ novels, user }) => {
+	const router = useRouter();
 	const { RenderLoadingPopup, openLoadingPopup, closeLoadingPopup } =
 		useLoadingPopup();
-	const router = useRouter();
 
 	const schema = yup.object().shape({
 		novel: yup.string().required(),
@@ -36,7 +36,7 @@ const newChapter = ({ novels, user }) => {
 	const createNewChapter = async (data) => {
 		try {
 			openLoadingPopup();
-			const res = await axios.post(
+			const { data: res } = await axios.post(
 				`${process.env.API_URL}/novels/${data.novel}/create`,
 				data,
 				{

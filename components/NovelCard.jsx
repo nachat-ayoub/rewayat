@@ -28,7 +28,7 @@ const NovelCard = ({ novel, className, showChapters }) => {
                     <LinkButton
                       key={chapter.slug + "-" + i}
                       href={`/novels/${novel.slug}/${chapter.slug}`}
-                      className={`inline-block font-bold text-center hover:bg-primary-700 shadow-md hover:text-gray-200 transition-all duration-300 my-1 w-full py-2`}
+                      className={`inline-block font-bold text-center bg-primary-400 hover:bg-primary-600 shadow-md hover:text-gray-200 transition-all duration-300 my-1 w-full py-2`}
                     >
                       الفصل {chapter.slug}
                     </LinkButton>
@@ -37,7 +37,7 @@ const NovelCard = ({ novel, className, showChapters }) => {
                     <LinkButton
                       key={chapter.slug + "-" + i}
                       href={`/novels/${novel.slug}/${chapter.slug}`}
-                      className={`inline-block font-bold text-center hover:bg-primary-700 shadow-md hover:text-gray-200 transition-all duration-300 my-1 w-full py-2`}
+                      className={`inline-block font-bold text-center bg-primary-400 hover:bg-primary-600 shadow-md hover:text-gray-200 transition-all duration-300 my-1 w-full py-2`}
                     >
                       الفصل {chapter.slug}
                     </LinkButton>
@@ -49,7 +49,7 @@ const NovelCard = ({ novel, className, showChapters }) => {
             <div className="flex justify-center items-center flex-col">
               <Link href={"/novels/" + novel.slug}>
                 <a
-                  className={`inline-block text-center font-bold text-white hover:text-primary-50 transition-all duration-300`}
+                  className={`inline-block text-center font-bold text-white hover:text-primary-10 transition-all duration-300`}
                 >
                   {novel.title}
                 </a>

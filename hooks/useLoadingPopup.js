@@ -11,7 +11,7 @@ export default function useLoadingPopup() {
   const openLoadingPopup = () => setIsLoading(true);
 
   const RenderLoadingPopup = () => (
-    <CustomModal size={"md"} show={isLoading} onClose={toggleLoadingPopup}>
+    <CustomModal size={"md"} show={isLoading} onClose={closeLoadingPopup}>
       <div className="flex flex-col gap-3 justify-center items-center py-4">
         <Spinner color="purple" size="xl" aria-label="creating new novel..." />
         <h3 className="text-lg dark:text-white">Creating Novel...</h3>

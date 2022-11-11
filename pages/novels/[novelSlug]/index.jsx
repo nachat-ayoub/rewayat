@@ -2,6 +2,7 @@ import { useWindowSize } from "use-window-size-hook";
 import { useEffect, useRef, useState } from "react";
 import { formatNumber } from "../../../utils";
 import { isAuth } from "../../../utils/auth";
+import Link from "next/link";
 import axios from "axios";
 
 import Container from "../../../components/Container";
@@ -12,6 +13,7 @@ import ClientOnly from "../../../components/ClientOnly";
 const NovelPage = ({ novel }) => {
   const [height, setHeight] = useState(0);
   const [storyHidden, toggleStoryHidden] = useToggler();
+  const [chapters, setChapters] = useState(novel?.chapters ?? []);
 
   const divRef = useRef(null);
 
@@ -64,65 +66,99 @@ const NovelPage = ({ novel }) => {
       <div className="w-full">
         <div className="w-full flex justify-between items-center gap-4 px-8">
           <LinkButton
-            className="px-8 py-3"
-            href={`/novels/${novel.slug}/${novel.chapters.at(0).slug}`}
+            className={`px-8 py-3 md:px-12 md:py-4 md:text-[0.8rem] ${
+              !novel.chapters.at(-1) ? "btn-disabled" : ""
+            }`}
+            href={
+              novel.chapters.at(-1)
+                ? `/novels/${novel.slug}/${novel.chapters.at(-1).slug}`
+                : "#"
+            }
           >
             الفصل الاول
           </LinkButton>
           <LinkButton
-            className="px-8 py-3"
-            href={`/novels/${novel.slug}/${novel.chapters.at(-1).slug}`}
+            className={`px-8 py-3 md:px-12 md:py-4 md:text-[0.8rem] ${
+              !novel.chapters.at(0) ? "btn-disabled" : ""
+            }`}
+            href={
+              novel.chapters.at(0)
+                ? `/novels/${novel.slug}/${novel.chapters.at(0).slug}`
+                : "#"
+            }
           >
             الفصل الاخير
           </LinkButton>
         </div>
         <div className="w-full p-8">
-          <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
-            <table className="w-full text-sm text-right text-gray-500 dark:text-gray-400">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
-                <tr>
-                  <th
-                    onClick={() => {
-                      novel.chapters.reverse();
-                    }}
-                    scope="col"
-                    className="py-3 px-6 cursor-pointer"
-                  >
-                    الفصل
-                    <span className="inline-block p-2 rotate-90 cursor-pointer">
-                      <i className="fa-solid fa-right-left" />
-                    </span>
-                  </th>
-                  <th scope="col" className="py-3 px-6">
-                    عنوان الفصل
-                  </th>
-                  <th scope="col" className="py-3 px-6">
-                    تاريخ النشر
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* Row */}
-                {novel.chapters.length > 0 &&
-                  novel.chapters.map((chapter, i) => (
+          {chapters.length > 0 ? (
+            <div className="overflow-x-auto relative shadow-md sm:rounded-lg">
+              <table className="w-full text-sm text-right text-gray-500 dark:text-gray-400">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-300">
+                  <tr>
+                    <th
+                      onClick={() => setChapters([...chapters].reverse())}
+                      scope="col"
+                      className="py-3 px-6 cursor-pointer"
+                    >
+                      الفصل
+                      <span className="inline-block p-2 rotate-90 cursor-pointer">
+                        <i className="fa-solid fa-right-left" />
+                      </span>
+                    </th>
+                    <th scope="col" className="py-3 px-6">
+                      عنوان الفصل
+                    </th>
+                    <th scope="col" className="py-3 px-6">
+                      تاريخ النشر
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* Row */}
+                  {chapters.map((chapter, i) => (
                     <tr
-                      key={chapter.slug + "-" + i}
+                      key={chapter.slug + "-chapter-" + i}
                       className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
                       <th
                         scope="row"
-                        className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                        className="font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
-                        الفصل {chapter.slug}
+                        <Link href={`/novels/${novel.slug}/${chapter.slug}`}>
+                          <a className="inline-block w-full h-full py-4 px-6">
+                            الفصل {chapter.slug}
+                          </a>
+                        </Link>
                       </th>
-                      <td className="py-4 px-6">{chapter.title}</td>
-                      <td className="py-4 px-6">{chapter.createdAt}</td>
+
+                      <td className="">
+                        <Link href={`/novels/${novel.slug}/${chapter.slug}`}>
+                          <a className="inline-block w-full h-full py-4 px-6">
+                            {chapter.title}
+                          </a>
+                        </Link>
+                      </td>
+                      <td className="">
+                        <Link href={`/novels/${novel.slug}/${chapter.slug}`}>
+                          <a className="inline-block w-full h-full py-4 px-6">
+                            {chapter.createdAt}
+                          </a>
+                        </Link>
+                      </td>
                     </tr>
                   ))}
-                {/*  */}
-              </tbody>
-            </table>
-          </div>
+                  {/*  */}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <h2 className="text-2xl text-gray-300 font-semibold">
+                لا يوجد فصول حاليا
+              </h2>
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -149,7 +185,10 @@ const NovelInfo = ({ novel, storyHidden, toggleStoryHidden, mobileView }) => {
         />
 
         <div className={`mt-24 md:mt-0`}>
-          <h1 className="text-2xl capitalize font-bold my-3 md:mt-0 text-center md:text-justify">
+          <h1
+            dir="auto"
+            className="text-2xl capitalize font-bold my-3 md:mt-0 text-center md:text-right"
+          >
             {novel.title}
           </h1>
           <table className="">

@@ -1,6 +1,7 @@
-const User = require("../models/User");
 const { hashPassword, createToken } = require("../services/authHelpers");
 const { cloudinaryUpload } = require("../services/cloudinary");
+const Chapter = require("../models/Chapter");
+const User = require("../models/User");
 
 // ! Get All Users
 module.exports.getAllUsers = async (req, res) => {
@@ -16,6 +17,7 @@ module.exports.getAllUsers = async (req, res) => {
     console.log(error);
   }
 };
+
 // ! Get User
 module.exports.getUser = async (req, res) => {
   try {
@@ -219,6 +221,48 @@ module.exports.deleteUser = async (req, res) => {
         ok: false,
         msg: "user not found!",
       });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// ! Get All Chapters Created By User
+module.exports.getUserChapters = async (req, res) => {
+  try {
+    const { username } = req.params;
+    let userId = null;
+    if (username === req.user.username) {
+      userId = req.user._id;
+    } else {
+      const user = await User.findOne({ username });
+      if (!user) {
+        return res.json({
+          action: "getUserChapters",
+          ok: false,
+          msg: "user does not exist username",
+        });
+      }
+      userId = user._id;
+    }
+
+    if (!userId) {
+      return res.json({
+        ok: false,
+        action: "getUserChapters",
+        msg: "something went wrong!",
+      });
+    }
+
+    const chapters = await Chapter.find({ publisher: userId })
+      .populate("publisher", "_id username role image")
+      .populate("novel", "_id slug title image");
+
+    res.json({
+      ok: true,
+      action: "getAllChapters",
+      count: chapters.length,
+      chapters,
+    });
   } catch (error) {
     console.log(error);
   }

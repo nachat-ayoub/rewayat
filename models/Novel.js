@@ -8,7 +8,9 @@ const novelSchema = new mongoose.Schema(
     },
     slug: {
       type: String,
+      lowercase: true,
       required: true,
+      trim: true,
     },
     story: {
       type: String,

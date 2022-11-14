@@ -6,6 +6,7 @@ const {
   createChapter,
   updateChapter,
   deleteChapter,
+  getChaptersCreatedByUser,
 } = require("../controllers/chapterController");
 
 const {
@@ -17,7 +18,7 @@ const {
 // ? - /novels/:novelSlug/
 
 // ! Get All
-router.get("/:novelSlug/chapters", getAllChapters);
+// router.get("/:novelSlug/chapters", getAllChapters);
 
 // ! Create
 router.post(

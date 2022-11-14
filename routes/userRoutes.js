@@ -6,10 +6,12 @@ const {
   login,
   updateUser,
   deleteUser,
+  getUserChapters,
 } = require("../controllers/userController");
 
 const {
   authMiddleware,
+  authorMiddleware,
   adminMiddleware,
   checkUserMiddleware,
 } = require("../middlewares");
@@ -30,6 +32,14 @@ router.put(
   authMiddleware,
   checkUserMiddleware,
   updateUser
+);
+
+// ! Get User Chapters :
+router.get(
+  "/:username/chapters",
+  authMiddleware,
+  authorMiddleware,
+  getUserChapters
 );
 
 module.exports = router;

@@ -3,34 +3,6 @@ const Chapter = require("../models/Chapter");
 const Novel = require("../models/Novel");
 const User = require("../models/User");
 
-// ! Get All Chapters
-module.exports.getAllChapters = async (req, res) => {
-  try {
-    const { novelSlug } = req.params;
-    console.log({ novelSlug });
-    const novel = await Novel.findOne({ slug: novelSlug }).populate(
-      "chapters",
-      "_id slug title createdAt updatedAt"
-    );
-    if (!novel) {
-      return res.json({
-        action: "getAllChapters",
-        msg: "no novel with this slug!",
-        novelSlug,
-        ok: false,
-      });
-    }
-
-    res.json({
-      action: "getAllChapters",
-      count: novel.chapters.length,
-      novel,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
 // ! Get One Chapter
 module.exports.getChapter = async (req, res) => {
   try {
@@ -61,7 +33,7 @@ module.exports.getChapter = async (req, res) => {
       });
     }
 
-    const chapters = await Chapter.find({}).sort({
+    const chapters = await Chapter.find({ novel: novel._id }).sort({
       createdAt: 1,
     });
 
@@ -99,6 +71,34 @@ module.exports.getChapter = async (req, res) => {
         disable: nextChapter.title.includes("#"),
       },
       chapters,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// ! Get Novel Chapters
+module.exports.getNovelChapters = async (req, res) => {
+  try {
+    const { novelSlug } = req.params;
+
+    const novel = await Novel.findOne({ slug: novelSlug }).populate(
+      "chapters",
+      "_id slug title createdAt updatedAt"
+    );
+    if (!novel) {
+      return res.json({
+        action: "getAllChapters",
+        msg: "no novel with this slug!",
+        novelSlug,
+        ok: false,
+      });
+    }
+
+    res.json({
+      action: "getAllChapters",
+      count: novel.chapters.length,
+      novel,
     });
   } catch (error) {
     console.log(error);

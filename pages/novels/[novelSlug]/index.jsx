@@ -22,6 +22,7 @@ const NovelPage = ({ novel }) => {
   });
 
   const { width } = useWindowSize();
+
   return (
     <div className="w-full h-full">
       <div className="w-full h-full">

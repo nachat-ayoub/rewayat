@@ -22,144 +22,167 @@ const UserChaptersPage = (props) => {
 			})
 		);
 	};
+	// Sort Chapters By Novel Name :
+	const sortByNovels = (e) => {
+		if (e.target.value === "all") {
+			return setChapters(props.chapters);
+		}
+		setChapters(
+			props.chapters.filter((ch) => ch.novel.slug === e.target.value)
+		);
+	};
+
+	const novelsOptions = () => {
+		let novels = [];
+		props.chapters.map(({ novel }) => {
+			if (!novels.some((n) => n.slug === novel.slug)) {
+				novels.push(novel);
+			}
+		});
+		return novels;
+	};
 
 	return (
 		<Container className="px-2">
 			<div className="w-full">
 				{chapters.length > 0 ? (
-					<div className="overflow-x-auto relative shadow-md rounded sm:rounded-lg">
-						<table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
-							<thead className="text-xs text-gray-700 uppercase bg-gray-150 dark:bg-gray-700 dark:text-gray-300">
-								<tr>
-									<th
-										onClick={() =>
-											setChapters([...chapters].reverse())
-										}
-										scope="col"
-										className="py-3 px-6 cursor-pointer"
-									>
-										<div className="w-full flex items-center justify-center">
-											<span>الفصل</span>
+					<div className="w-full">
+						<div dir="auto" className="w-full mb-6">
+							<h4 className="text-xl text-left">Filter :</h4>
+							<div className="w-full mb-6 text-Black">
+								<select
+									onChange={sortByNovels}
+									className="input mt-2"
+								>
+									<option value="all">All</option>
+									{novelsOptions().map((novel) => (
+										<option
+											key={novel.slug}
+											value={novel.slug}
+										>
+											{novel.title}
+										</option>
+									))}
+								</select>
+							</div>
+						</div>
+
+						<div className="overflow-x-auto relative shadow-md rounded sm:rounded-lg">
+							<table className="w-full text-sm text-center text-gray-500 dark:text-gray-400">
+								<thead className="text-xs text-gray-700 uppercase bg-gray-150 dark:bg-gray-700 dark:text-gray-300">
+									<tr>
+										<th
+											onClick={() =>
+												setChapters(
+													[...chapters].reverse()
+												)
+											}
+											scope="col"
+											className="py-3 px-6 cursor-pointer"
+										>
+											<div className="w-full flex items-center justify-center">
+												<span>الفصل</span>
+												<span className="inline-block p-2 rotate-90 cursor-pointer">
+													<i className="fa-solid fa-right-left" />
+												</span>
+											</div>
+										</th>
+										<th
+											scope="col"
+											className="hidden md:table-cell py-3 px-6"
+										>
+											عنوان الفصل
+										</th>
+										<th
+											scope="col"
+											className="py-3 px-6 cursor-pointer"
+										>
+											عنوان الرواية
 											<span className="inline-block p-2 rotate-90 cursor-pointer">
 												<i className="fa-solid fa-right-left" />
 											</span>
-										</div>
-									</th>
-									<th
-										scope="col"
-										className="hidden md:table-cell py-3 px-6"
-									>
-										عنوان الفصل
-									</th>
-									<th scope="col" className="py-3 px-6">
-										عنوان الرواية
-									</th>
-									<th
-										onClick={sortChaptersByDate}
-										scope="col"
-										className="py-3 px-6 cursor-pointer"
-									>
-										تاريخ النشر
-										<span className="inline-block p-2 rotate-90 cursor-pointer">
-											<i className="fa-solid fa-right-left" />
-										</span>
-									</th>
-								</tr>
-							</thead>
-							<tbody>
-								{/* Row */}
-								{chapters.map((chapter, i) => (
-									<tr
-										key={`${i}__${chapter.novel.slug}-chapter-${chapter.slug}`}
-										className="overflow-hidden relative group bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-									>
-										{/*  */}
-										<td
-											scope="row"
-											colSpan="4"
-											className="bg-primary-50 text-white hidden group-hover:table-cell group-hover:animate-pulse"
-										>
-											<div className="flex items-center justify-evenly gap-2 w-full h-full">
-												<Link
-													href={`/novels/${chapter.novel.slug}/${chapter.slug}`}
-												>
-													<a className="inline-block w-full py-4 px-6 hover:bg-primary-300">
-														Edit
-													</a>
-												</Link>
-
-												<Link
-													href={`/novels/${chapter.novel.slug}/${chapter.slug}`}
-												>
-													<a className="inline-block w-full py-4 px-6 hover:bg-primary-300">
-														Delete
-													</a>
-												</Link>
-											</div>
-										</td>
-										{/*  */}
-
-										<th
-											scope="row"
-											className="table-cell group-hover:hidden font-medium text-gray-900 whitespace-nowrap dark:text-white"
-										>
-											<Link
-												href={`/novels/${chapter.novel.slug}/${chapter.slug}`}
-											>
-												<a className="inline-block w-full h-full py-4 px-6">
-													الفصل {chapter.slug}
-												</a>
-											</Link>
 										</th>
-
-										<td className="group-hover:hidden hidden md:table-cell ">
-											<Link
-												href={`/novels/${chapter.novel.slug}/${chapter.slug}`}
-											>
-												<a className="inline-block w-full h-full py-4 px-6">
-													{chapter.title}
-												</a>
-											</Link>
-										</td>
-										<td className="group-hover:hidden">
-											<Link
-												href={`/novels/${chapter.novel.slug}/`}
-											>
-												<a
-													dir="auto"
-													className="inline-block w-full h-full py-4 px-6"
-												>
-													{chapter.novel.title}
-												</a>
-											</Link>
-										</td>
-										<td className="group-hover:hidden">
-											<Link
-												href={`/novels/${chapter.novel.slug}/${chapter.slug}`}
-											>
-												<a className="flex gap-4 w-full h-full py-4 px-6">
-													<span className="">
-														{chapter.createdAt
-															.split("T")[1]
-															.split(":")
-															.slice(0, 2)
-															.join(":")}
-													</span>
-													<span className="">
-														{
-															chapter.createdAt.split(
-																"T"
-															)[0]
-														}
-													</span>
-												</a>
-											</Link>
-										</td>
+										<th
+											onClick={sortChaptersByDate}
+											scope="col"
+											className="py-3 px-6 cursor-pointer"
+										>
+											تاريخ النشر
+											<span className="inline-block p-2 rotate-90 cursor-pointer">
+												<i className="fa-solid fa-right-left" />
+											</span>
+										</th>
 									</tr>
-								))}
-								{/*  */}
-							</tbody>
-						</table>
+								</thead>
+								<tbody>
+									{/* Row */}
+									{chapters.map((chapter, i) => (
+										<tr
+											key={`${i}__${chapter.novel.slug}-chapter-${chapter.slug}`}
+											className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+										>
+											<th
+												scope="row"
+												className="font-medium text-gray-900 whitespace-nowrap dark:text-white"
+											>
+												<Link
+													href={`/novels/${chapter.novel.slug}/${chapter.slug}`}
+												>
+													<a className="inline-block w-full h-full py-4 px-6">
+														الفصل {chapter.slug}
+													</a>
+												</Link>
+											</th>
+
+											<td className="hidden md:table-cell ">
+												<Link
+													href={`/novels/${chapter.novel.slug}/${chapter.slug}`}
+												>
+													<a className="inline-block w-full h-full py-4 px-6">
+														{chapter.title}
+													</a>
+												</Link>
+											</td>
+											<td className="">
+												<Link
+													href={`/novels/${chapter.novel.slug}/`}
+												>
+													<a
+														dir="auto"
+														className="inline-block w-full h-full py-4 px-6"
+													>
+														{chapter.novel.title}
+													</a>
+												</Link>
+											</td>
+											<td className="">
+												<Link
+													href={`/novels/${chapter.novel.slug}/${chapter.slug}`}
+												>
+													<a className="flex gap-4 w-full h-full py-4 px-6">
+														<span className="">
+															{chapter.createdAt
+																.split("T")[1]
+																.split(":")
+																.slice(0, 2)
+																.join(":")}
+														</span>
+														<span className="">
+															{
+																chapter.createdAt.split(
+																	"T"
+																)[0]
+															}
+														</span>
+													</a>
+												</Link>
+											</td>
+										</tr>
+									))}
+									{/*  */}
+								</tbody>
+							</table>
+						</div>
 					</div>
 				) : (
 					<div className="text-center py-6">

@@ -1,7 +1,23 @@
-const { slugify } = require("../services/");
 const Chapter = require("../models/Chapter");
 const Novel = require("../models/Novel");
 const User = require("../models/User");
+
+// ! Get One getAllChapters
+module.exports.getAllChapters = async (req, res) => {
+  try {
+    const chapters = await Chapter.find({ published: true })
+      .populate("novel")
+      .sort({ createdAt: -1 });
+
+    res.json({
+      ok: true,
+      msg: "getAllChapters",
+      chapters,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // ! Get One Chapter
 module.exports.getChapter = async (req, res) => {
@@ -13,7 +29,7 @@ module.exports.getChapter = async (req, res) => {
     const novel = await Novel.findOne({ slug: novelSlug });
     if (!novel)
       res.json({
-        action: "getAllChapters",
+        action: "getChapters",
         count: novel.chapters.length,
         novel,
       });
@@ -82,13 +98,12 @@ module.exports.getNovelChapters = async (req, res) => {
   try {
     const { novelSlug } = req.params;
 
-    const novel = await Novel.findOne({ slug: novelSlug }).populate(
-      "chapters",
-      "_id slug title createdAt updatedAt"
-    );
+    const novel = await Novel.findOne({
+      slug: novelSlug,
+    }).populate("chapters", "_id slug title createdAt updatedAt");
     if (!novel) {
       return res.json({
-        action: "getAllChapters",
+        action: "getNovelChapters",
         msg: "no novel with this slug!",
         novelSlug,
         ok: false,
@@ -96,7 +111,7 @@ module.exports.getNovelChapters = async (req, res) => {
     }
 
     res.json({
-      action: "getAllChapters",
+      action: "getNovelChapters",
       count: novel.chapters.length,
       novel,
     });
@@ -229,7 +244,7 @@ module.exports.deleteChapter = async (req, res) => {
       });
     }
 
-    const chapter = await Chapter.findOneAndDelete({
+    const chapter = await Chapter.findOne({
       novel: novel._id,
       slug: Number(chapterSlug),
     });
@@ -242,11 +257,7 @@ module.exports.deleteChapter = async (req, res) => {
       });
     }
 
-    const chapterIndex = novel.chapters.indexOf(chapter._id);
-    if (chapterIndex > -1) {
-      novel.chapters.splice(chapterIndex, 1);
-      await novel.save();
-    }
+    chapter.remove();
 
     res.json({ action: "deleteChapter", ok: true, chapter });
   } catch (error) {

@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const novelRoutes = require("./novelRoutes");
+const chapterRoutes = require("./chapterRoutes");
 const genreRoutes = require("./genreRoutes");
 const userRoutes = require("./userRoutes");
 
@@ -10,5 +11,6 @@ router.get("/", async (req, res, next) => {
 router.use("/auth", userRoutes);
 router.use("/novels", novelRoutes);
 router.use("/genres", genreRoutes);
+router.use("/", chapterRoutes);
 
 module.exports = router;

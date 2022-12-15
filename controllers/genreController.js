@@ -41,3 +41,15 @@ module.exports.createGenre = async (req, res) => {
     console.log(error);
   }
 };
+
+module.exports.deleteGenre = async (req, res) => {
+  try {
+    res.json({
+      ok: true,
+      action: "deleteGenre",
+      msg: "Delete Genre is not supported right now.",
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};

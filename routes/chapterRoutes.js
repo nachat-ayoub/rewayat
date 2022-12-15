@@ -1,12 +1,12 @@
 const router = require("express").Router();
 
 const {
-  getAllChapters,
   getChapter,
   createChapter,
   updateChapter,
   deleteChapter,
-  getChaptersCreatedByUser,
+  getAllChapters,
+  // getChaptersCreatedByUser,
 } = require("../controllers/chapterController");
 
 const {
@@ -15,25 +15,23 @@ const {
   adminMiddleware,
 } = require("../middlewares");
 
-// ? - /novels/:novelSlug/
-
 // ! Get All
-// router.get("/:novelSlug/chapters", getAllChapters);
+router.get("/chapters", getAllChapters);
 
 // ! Create
 router.post(
-  "/:novelSlug/create",
+  "/novels/:novelSlug/create",
   authMiddleware,
   authorMiddleware,
   createChapter
 );
 
 // ! Get One
-router.get("/:novelSlug/:chapterSlug", getChapter);
+router.get("/novels/:novelSlug/:chapterSlug", getChapter);
 
 // ! Update One
 router.put(
-  "/:novelSlug/:chapterSlug/update",
+  "/novels/:novelSlug/:chapterSlug/update",
   authMiddleware,
   authorMiddleware,
   updateChapter
@@ -41,7 +39,7 @@ router.put(
 
 // ! Delete One
 router.delete(
-  "/:novelSlug/:chapterSlug/delete",
+  "/novels/:novelSlug/:chapterSlug/delete",
   authMiddleware,
   adminMiddleware,
   deleteChapter

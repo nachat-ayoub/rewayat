@@ -10,9 +10,12 @@ const mongoose = require("mongoose");
 module.exports.getAllNovels = async (req, res) => {
   try {
     const novels = await Novel.find({})
-      .sort({ createdAt: -1 })
+      .sort({ updatedAt: -1 })
       .populate({
         path: "chapters",
+        match: {
+          published: true,
+        },
         options: { sort: { createdAt: -1 } },
       })
       .populate("genres", "_id name slug");
@@ -61,7 +64,10 @@ module.exports.getNovel = async (req, res) => {
       .populate("genres")
       .populate({
         path: "chapters",
-        options: { sort: { createdAt: -1 } },
+        match: {
+          published: true,
+        },
+        options: { sort: { slug: -1 } },
         select: "_id slug title createdAt updatedAt",
       })
       .populate("publisher", "username email image bio createdAt updatedAt");
@@ -157,6 +163,10 @@ module.exports.createNovel = async (req, res) => {
 // ! Update Novel [X]
 module.exports.updateNovel = async (req, res) => {
   try {
+    Object.keys(req.body).forEach(
+      (k) => req.body[k] === null && delete req.body[k]
+    );
+
     const novel = await Novel.findOne({ slug: req.params.slug }).populate(
       "genres"
     );
@@ -237,7 +247,7 @@ module.exports.updateNovel = async (req, res) => {
 module.exports.deleteNovel = async (req, res) => {
   try {
     const { slug } = req.params;
-    const novel = await Novel.findOneAndDelete({ slug });
+    const novel = await Novel.findOne({ slug });
 
     if (!novel) {
       return res.json({
@@ -248,24 +258,7 @@ module.exports.deleteNovel = async (req, res) => {
       });
     }
 
-    const user = await User.findById(novel.publisher._id);
-    // user.novels
-
-    const userNovelIndex = user.novels.indexOf(novel._id);
-    if (userNovelIndex > -1) {
-      user.novels.splice(userNovelIndex, 1);
-      await user.save();
-    }
-
-    for (let i = 0; i < novel.genres.length; i++) {
-      const genreId = novel.genres[i];
-      const genre = await Genre.findById(genreId);
-      const genreNovelIndex = genre.novels.indexOf(novel._id);
-      if (genreNovelIndex > -1) {
-        genre.novels.splice(genreNovelIndex, 1);
-        await genre.save();
-      }
-    }
+    await novel.remove();
 
     return res.json({
       action: "deleteNovel",

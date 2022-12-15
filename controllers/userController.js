@@ -255,7 +255,8 @@ module.exports.getUserChapters = async (req, res) => {
 
     const chapters = await Chapter.find({ publisher: userId })
       .populate("publisher", "_id username role image")
-      .populate("novel", "_id slug title image");
+      .populate("novel", "_id slug title image")
+      .sort({ createdAt: -1 });
 
     res.json({
       ok: true,

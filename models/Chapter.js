@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Novel = require("./Novel");
 
 const chapterSchema = new mongoose.Schema(
   {
@@ -29,6 +30,16 @@ const chapterSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+chapterSchema.post("remove", async (chapter) => {
+  const novel = await Novel.findById(chapter.novel);
+  const chapterIndex = novel.chapters.indexOf(chapter._id);
+
+  if (chapterIndex > -1) {
+    novel.chapters.splice(chapterIndex, 1);
+    await novel.save();
+  }
+});
 
 const Chapter = mongoose.model("Chapter", chapterSchema);
 module.exports = Chapter;

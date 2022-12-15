@@ -1,5 +1,4 @@
 const router = require("express").Router();
-const chapterRoutes = require("./chapterRoutes");
 
 const {
   getAllNovels,
@@ -18,7 +17,5 @@ router.post("/create", authMiddleware, authorMiddleware, createNovel);
 router.get("/:slug", getNovel);
 router.put("/:slug/update", authMiddleware, authorMiddleware, updateNovel);
 router.delete("/:slug/delete", authMiddleware, authorMiddleware, deleteNovel);
-
-router.use("/", chapterRoutes);
 
 module.exports = router;

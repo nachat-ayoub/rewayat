@@ -1,5 +1,5 @@
-import { isAuth } from "../../../utils/auth";
-import { setTokenCookie } from "../../../utils/token";
+import { setTokenCookie } from "@utils/token";
+import { isAuth } from "@utils/auth";
 
 export default async function handler(req, res) {
   if (req.method === "POST") {

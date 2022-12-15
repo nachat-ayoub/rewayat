@@ -3,7 +3,6 @@ import useLoadingPopup from "@hooks/useLoadingPopup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getBase64, isRTL } from "@utils/index";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import * as yup from "yup";
@@ -11,14 +10,15 @@ import axios from "axios";
 
 import LinkButton from "@components/LinkButton";
 import Container from "@components/Container";
+import Line from "@components/Line";
+import { Button } from "flowbite-react";
 
-const CreateNovel = ({ genres }) => {
-  const [selectedGenres, setSelectedGenres] = useState([]);
+const EditNovel = ({ user, novel, genres }) => {
+  const [selectedGenres, setSelectedGenres] = useState(novel?.genres ?? []);
   const [filteredGenres, setFilteredGenres] = useState([]);
   const [genreInput, setGenreInput] = useState("");
   const { RenderLoadingPopup, toggleLoadingPopup } = useLoadingPopup();
 
-  const { user } = useSelector((state) => state.auth.value);
   const router = useRouter();
 
   const schema = yup.object().shape({
@@ -26,19 +26,17 @@ const CreateNovel = ({ genres }) => {
     story: yup.string().required(),
     image: yup
       .mixed()
-      .test("required", "You need to provide an image", ([file]) => {
-        if (file && file.size) return true;
-        return false;
-      })
       .test("fileSize", "The image is too large max size is 1MB", ([file]) => {
         const one_MB = 1050000;
+        if (!file) return true;
+
         return file && file.size <= one_MB;
       })
       .test(
         "fileType",
         "This image format is not supported (supported formats: png/jpg/jpeg)",
         ([file]) => {
-          if (!file) return false;
+          if (!file) return true;
           return ["png", "jpg", "jpeg"].includes(file.type.split("image/")[1]);
         }
       ),
@@ -49,15 +47,19 @@ const CreateNovel = ({ genres }) => {
     handleSubmit,
     formState: { errors },
   } = useForm({
+    defaultValues: {
+      title: novel?.title,
+      story: novel?.story,
+    },
     resolver: yupResolver(schema),
   });
 
-  const createNewNovel = ({ title, story, image }) => {
+  const updateNovel = ({ title, story, image }) => {
     toggleLoadingPopup();
-    const { token } = user;
+
     getBase64(image[0], async (image) => {
-      const res = await axios.post(
-        process.env.API_URL + "/novels/create",
+      const res = await axios.put(
+        `${process.env.API_URL}/novels/${novel?.slug}/update`,
         {
           title,
           story,
@@ -66,15 +68,15 @@ const CreateNovel = ({ genres }) => {
         },
         {
           headers: {
-            token,
+            token: user.token,
           },
         }
       );
 
       if (res?.data?.ok) {
         setTimeout(() => {
-          router.push("/panel/novels");
           toggleLoadingPopup();
+          router.push("/panel/novels");
         }, 1000);
       }
     });
@@ -107,6 +109,28 @@ const CreateNovel = ({ genres }) => {
       left_genres.length > 3 ? left_genres.slice(0, 3) : left_genres
     );
   }, [genreInput]);
+
+  const handelNovelDelete = async () => {
+    try {
+      const res = await axios.delete(
+        `${process.env.API_URL}/novels/${novel.slug}/delete`,
+        {
+          headers: {
+            token: user.token,
+          },
+        }
+      );
+
+      if (res?.data?.ok) {
+        // TODO: add toast notification
+        router.push("/panel/novels");
+      } else {
+        // TODO: display error
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Container>
@@ -215,7 +239,7 @@ const CreateNovel = ({ genres }) => {
               </div>
             )}
           </div>
-          <form onSubmit={handleSubmit(createNewNovel)}>
+          <form onSubmit={handleSubmit(updateNovel)}>
             {/* Title */}
             <input
               dir="auto"
@@ -263,7 +287,26 @@ const CreateNovel = ({ genres }) => {
             </div>
 
             {/*  */}
-            <button className="btn btn-purple mt-3">Create</button>
+
+            <button className="btn-purple mt-3">Update</button>
+            {user.role === "admin" ? (
+              <>
+                <div className="flex justify-center items-center my-3">
+                  <Line />
+                  <p className="px-2">Or</p>
+                  <Line />
+                </div>
+                <Button
+                  onClick={handelNovelDelete}
+                  color="failure"
+                  className="w-full rounded-[4px]"
+                >
+                  Delete
+                </Button>
+              </>
+            ) : (
+              <OnlyRoleAlert role={"admin"} action={"delete novels."} />
+            )}
           </form>
         </div>
       </div>
@@ -271,16 +314,29 @@ const CreateNovel = ({ genres }) => {
   );
 };
 
-export default CreateNovel;
+export default EditNovel;
 
-export const getServerSideProps = ({ req }) => {
+export const getServerSideProps = ({ req, params }) => {
   return requireAuthorAuth({ req }, async ({ user }) => {
-    const resp = await axios.get(process.env.API_URL + "/genres", {
+    const resp = await axios.get(`${process.env.API_URL}/genres`, {
       headers: { token: user?.token },
     });
 
+    const novelResp = await axios.get(
+      `${process.env.API_URL}/novels/${params?.novelSlug}`,
+      {
+        headers: {
+          token: user.token,
+        },
+      }
+    );
+
     return {
-      props: { genres: resp?.data?.genres ?? [] },
+      props: {
+        user,
+        novel: novelResp?.data?.novel ?? null,
+        genres: resp?.data?.genres ?? [],
+      },
     };
   });
 };

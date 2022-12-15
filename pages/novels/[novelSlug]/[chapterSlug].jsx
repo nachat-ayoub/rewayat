@@ -1,5 +1,5 @@
-import LinkButton from "../../../components/LinkButton";
-import Container from "../../../components/Container";
+import LinkButton from "@components/LinkButton";
+import Container from "@components/Container";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";

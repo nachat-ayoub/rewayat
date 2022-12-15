@@ -1,11 +1,11 @@
-import { useEffect } from "react";
-import { authenticate } from "../store/authSlice";
+import { authenticate } from "@store/authSlice";
 import { useDispatch } from "react-redux";
-import { wrapper } from "../store";
+import { useEffect } from "react";
+import { wrapper } from "@store/index";
 import axios from "axios";
 
-import Layout from "../components/Layout";
-import PanelLayout from "../components/PanelLayout";
+import PanelLayout from "@components/PanelLayout";
+import Layout from "@components/Layout";
 
 import "../styles/globals.css";
 

@@ -1,6 +1,6 @@
-import { requireAuthorAuth } from "../../utils/middlewares";
+import { requireAuthorAuth } from "@utils/middlewares";
 
-import Container from "../../components/Container";
+import Container from "@components/Container";
 
 const AuthorPanel = ({ user }) => {
   return (

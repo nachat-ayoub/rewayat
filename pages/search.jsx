@@ -1,5 +1,5 @@
-import Container from "../components/Container";
-import DropDown from "../components/DropDown";
+import Container from "@components/Container";
+import DropDown from "@components/DropDown";
 
 const Search = () => {
   return (

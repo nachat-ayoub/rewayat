@@ -1,8 +1,9 @@
 import LinkButton from "./LinkButton";
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "flowbite-react";
 
-const NovelCard = ({ novel, className, showChapters }) => {
+const NovelCard = ({ novel, className, showChapters, showActionButtons }) => {
   return (
     <div className={`w-52 ${className ?? ""}`}>
       <div className="group cursor-pointer relative w-full h-72 bg-Gray rounded-lg shadow-lg overflow-hidden">
@@ -19,42 +20,86 @@ const NovelCard = ({ novel, className, showChapters }) => {
           </a>
         </Link>
 
-        {/* Chapters */}
-        {showChapters && novel.chapters.length > 0 && (
+        {(showActionButtons || showChapters) && (
           <div className="w-full h-full bg-gradient-to-t from-Black flex justify-center items-center flex-col absolute right-0 left-0 bottom-0 top-full group-hover:top-0 transition-all duration-[0.4s] delay-200 gap-4 px-2 py-1">
-            <div className="w-full flex justify-center items-center flex-col">
-              {novel.chapters.length > 3
-                ? novel.chapters.slice(-3).map((chapter, i) => (
-                    <LinkButton
-                      key={chapter.slug + "-" + i}
-                      href={`/novels/${novel.slug}/${chapter.slug}`}
-                      className={`inline-block font-bold text-center bg-primary-400 hover:bg-primary-600 shadow-md hover:text-gray-200 transition-all duration-300 my-1 w-full py-2`}
-                    >
-                      الفصل {chapter.slug}
-                    </LinkButton>
-                  ))
-                : novel.chapters.map((chapter, i) => (
-                    <LinkButton
-                      key={chapter.slug + "-" + i}
-                      href={`/novels/${novel.slug}/${chapter.slug}`}
-                      className={`inline-block font-bold text-center bg-primary-400 hover:bg-primary-600 shadow-md hover:text-gray-200 transition-all duration-300 my-1 w-full py-2`}
-                    >
-                      الفصل {chapter.slug}
-                    </LinkButton>
-                  ))}
-            </div>
-            {/* Line */}
-            <div className="border-gray-100 border-t w-0 group-hover:w-48 transition-all duration-300 delay-0 group-hover:delay-500"></div>
+            {/* Action Buttons */}
+            {showActionButtons && (
+              <div className="absolute top-0 w-full flex justify-between items-center p-2">
+                <Link href={`/panel/novels/${novel.slug}/edit`}>
+                  <a>
+                    <Button color="dark" pill className="w-10 h-10 shadow">
+                      <span>
+                        <i className="fa-solid fa-edit" />
+                      </span>
+                    </Button>
+                  </a>
+                </Link>
+                <Link href={`/novels/${novel.slug}`}>
+                  <a>
+                    <Button color="dark" pill className="w-10 h-10 shadow">
+                      <span>
+                        <i className="fa-solid fa-up-right-from-square" />
+                      </span>
+                    </Button>
+                  </a>
+                </Link>
+              </div>
+            )}
+            {/* Chapters */}
+            {showChapters && novel.chapters.length > 0 ? (
+              <>
+                <div className="w-full flex justify-center items-center flex-col">
+                  {novel.chapters.length > 3
+                    ? novel.chapters.slice(-3).map((chapter, i) => (
+                        <LinkButton
+                          key={chapter.slug + "-" + i}
+                          href={`/novels/${novel.slug}/${chapter.slug}`}
+                          className={`inline-block font-bold text-center bg-primary-400 hover:bg-primary-600 shadow-md hover:text-gray-200 transition-all duration-300 my-1 w-full py-2`}
+                        >
+                          الفصل {chapter.slug}
+                        </LinkButton>
+                      ))
+                    : novel.chapters.map((chapter, i) => (
+                        <LinkButton
+                          key={chapter.slug + "-" + i}
+                          href={`/novels/${novel.slug}/${chapter.slug}`}
+                          className={`inline-block font-bold text-center bg-primary-400 hover:bg-primary-600 shadow-md hover:text-gray-200 transition-all duration-300 my-1 w-full py-2`}
+                        >
+                          الفصل {chapter.slug}
+                        </LinkButton>
+                      ))}
+                </div>
+                {/* Line */}
+                <div className="border-gray-100 border-t w-0 group-hover:w-48 transition-all duration-300 delay-0 group-hover:delay-500"></div>
 
-            <div className="flex justify-center items-center flex-col">
-              <Link href={"/novels/" + novel.slug}>
-                <a
-                  className={`inline-block text-center font-bold text-white hover:text-primary-10 transition-all duration-300`}
+                <div className="flex justify-center items-center flex-col">
+                  <Link href={"/novels/" + novel.slug}>
+                    <a
+                      className={`inline-block text-center font-bold text-white hover:text-primary-10 transition-all duration-300`}
+                    >
+                      {novel.title}
+                    </a>
+                  </Link>
+                </div>
+              </>
+            ) : (
+              !showActionButtons && (
+                <div
+                  id="iam-a-btn"
+                  className="absolute w-full flex justify-center items-center p-2"
                 >
-                  {novel.title}
-                </a>
-              </Link>
-            </div>
+                  <Link href={`/novels/${novel.slug}`}>
+                    <a>
+                      <Button color="dark" pill className="w-12 h-12 shadow">
+                        <span>
+                          <i className="fa-solid fa-eye" />
+                        </span>
+                      </Button>
+                    </a>
+                  </Link>
+                </div>
+              )
+            )}
           </div>
         )}
       </div>

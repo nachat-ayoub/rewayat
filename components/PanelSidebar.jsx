@@ -1,5 +1,5 @@
 import DarkAndLightModeButton from "./DarkAndLightModeButton";
-import useDropdownMenu from "../hooks/useDropdownMenu";
+import useDropdownMenu from "@hooks/useDropdownMenu";
 import { useSelector } from "react-redux";
 import BigLogoSvg from "./BigLogoSvg";
 import Image from "next/image";

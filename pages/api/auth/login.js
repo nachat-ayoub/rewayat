@@ -1,4 +1,4 @@
-import { createToken, setTokenCookie } from "../../../utils/token";
+import { createToken, setTokenCookie } from "@utils/token";
 import axios from "axios";
 
 export default async function handler(req, res) {

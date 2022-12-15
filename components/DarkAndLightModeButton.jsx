@@ -1,5 +1,5 @@
-import useDarkMode from "../hooks/useDarkMode";
-import ClientOnly from "../components/ClientOnly";
+import useDarkMode from "@hooks/useDarkMode";
+import ClientOnly from "@components/ClientOnly";
 
 const DarkAndLightModeButton = ({ size }) => {
   const [theme, toggleTheme] = useDarkMode();

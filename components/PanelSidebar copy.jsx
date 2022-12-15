@@ -1,4 +1,4 @@
-import useDropdownMenu from "../hooks/useDropdownMenu";
+import useDropdownMenu from "@hooks/useDropdownMenu";
 import { useSelector } from "react-redux";
 import Image from "next/image";
 import Link from "next/link";

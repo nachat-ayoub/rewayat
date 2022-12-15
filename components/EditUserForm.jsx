@@ -1,9 +1,9 @@
-import { useDispatch, useSelector } from "react-redux";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { authenticate } from "../store/authSlice";
+import { authenticate } from "@store/authSlice";
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { useForm } from "react-hook-form";
-import { getBase64 } from "../utils";
+import { getBase64 } from "@utils/index";
 import * as yup from "yup";
 import axios from "axios";
 

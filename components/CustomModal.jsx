@@ -9,13 +9,13 @@ const CustomModal = ({ children, title, show, onClose, popup, size }) => {
       size={size ?? "2xl"}
     >
       {title ? (
-        <Modal.Header className="text-center">
+        <Modal.Header className="text-center dark:bg-gray-500">
           <div className="text-base text-center w-full">{title}</div>
         </Modal.Header>
       ) : (
-        <Modal.Header />
+        <Modal.Header className="dark:bg-gray-500" />
       )}
-      <Modal.Body>{children}</Modal.Body>
+      <Modal.Body className="dark:bg-gray-500 rounded-b">{children}</Modal.Body>
     </Modal>
   );
 };

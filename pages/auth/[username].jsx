@@ -1,11 +1,11 @@
-import { requireBasicAuth } from "../../utils/middlewares";
-import useToggler from "../../hooks/useToggler";
-import { getImageMainColor } from "../../utils";
+import { requireBasicAuth } from "@utils/middlewares";
+import useToggler from "@hooks/useToggler";
+import { getImageMainColor } from "@utils/index";
 import Image from "next/image";
 
-import Container from "../../components/Container";
-import CustomModal from "../../components/CustomModal";
-import EditUserForm from "../../components/EditUserForm";
+import Container from "@components/Container";
+import CustomModal from "@components/CustomModal";
+import EditUserForm from "@components/EditUserForm";
 import { useSelector } from "react-redux";
 
 const UserPage = ({ /* userData, */ profileColor }) => {
@@ -58,7 +58,11 @@ const UserPage = ({ /* userData, */ profileColor }) => {
         </h2>
         <p dir="auto" className="text-lg text-justify font-semibold">
           <span className="">{"❝ "}</span>
-          <span className={`${profileColor.isDark && "text-gray-100"}`}>
+          <span
+            className={`whitespace-pre-line ${
+              profileColor.isDark && "text-gray-100"
+            }`}
+          >
             {user?.bio}
           </span>
           <span className="">{" ❞"}</span>

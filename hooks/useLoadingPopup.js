@@ -1,8 +1,6 @@
-import useToggler from "./useToggler";
-import { useState } from "react";
-
-import CustomModal from "../components/CustomModal";
+import CustomModal from "@components/CustomModal";
 import { Spinner, Alert } from "flowbite-react";
+import useToggler from "./useToggler";
 
 export default function useLoadingPopup() {
   const [isLoading, toggleLoadingPopup, setIsLoading] = useToggler(false);

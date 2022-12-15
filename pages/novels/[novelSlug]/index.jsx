@@ -1,14 +1,14 @@
 import { useWindowSize } from "use-window-size-hook";
 import { useEffect, useRef, useState } from "react";
-import { formatNumber } from "../../../utils";
-import { isAuth } from "../../../utils/auth";
+import { formatNumber } from "@utils/index";
+import { isAuth } from "@utils/auth";
 import Link from "next/link";
 import axios from "axios";
 
-import Container from "../../../components/Container";
-import LinkButton from "../../../components/LinkButton";
-import useToggler from "../../../hooks/useToggler";
-import ClientOnly from "../../../components/ClientOnly";
+import Container from "@components/Container";
+import LinkButton from "@components/LinkButton";
+import ClientOnly from "@components/ClientOnly";
+import useToggler from "@hooks/useToggler";
 
 const NovelPage = ({ novel }) => {
   const [height, setHeight] = useState(0);
@@ -266,7 +266,7 @@ export const getServerSideProps = async ({ req, params }) => {
 
   const {
     data: { novel },
-  } = await axios.get(process.env.API_URL + "/novels/" + params.novelSlug, {
+  } = await axios.get(`${process.env.API_URL}/novels/${params.novelSlug}`, {
     headers: { token: user?.token ?? "" },
   });
 

@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { allowedRoles } from "../utils/middlewares";
-import { logout } from "../store/authSlice";
+import { allowedRoles } from "@utils/middlewares";
+import { logout } from "@store/authSlice";
 import { Dropdown } from "flowbite-react";
 import { useRouter } from "next/router";
 import Image from "next/image";

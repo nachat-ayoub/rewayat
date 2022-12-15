@@ -1,12 +1,12 @@
-import usePasswordShow from "../../hooks/usePasswordShow";
-import { authenticate } from "../../store/authSlice";
+import usePasswordShow from "@hooks/usePasswordShow";
+import { authenticate } from "@store/authSlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import Link from "next/link";
 
-import { requireLogout } from "../../utils/middlewares";
-import { registerUser } from "../../utils/auth";
+import { requireLogout } from "@utils/middlewares";
+import { registerUser } from "@utils/auth";
 
 // <Validation>
 //

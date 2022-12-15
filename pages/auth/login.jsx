@@ -1,7 +1,7 @@
-import usePasswordShow from "../../hooks/usePasswordShow";
-import { requireLogout } from "../../utils/middlewares";
-import { authenticate } from "../../store/authSlice";
-import { loginUser } from "../../utils/auth";
+import usePasswordShow from "@hooks/usePasswordShow";
+import { requireLogout } from "@utils/middlewares";
+import { authenticate } from "@store/authSlice";
+import { loginUser } from "@utils/auth";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -9,7 +9,7 @@ import Link from "next/link";
 
 // <Validation>
 //
-import Container from "../../components/Container";
+import Container from "@components/Container";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";

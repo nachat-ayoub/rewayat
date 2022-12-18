@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const mongoosePaginate = require("mongoose-paginate-v2");
 const Novel = require("./Novel");
 
 const chapterSchema = new mongoose.Schema(
@@ -30,6 +31,8 @@ const chapterSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+chapterSchema.plugin(mongoosePaginate);
 
 chapterSchema.post("remove", async (chapter) => {
   const novel = await Novel.findById(chapter.novel);

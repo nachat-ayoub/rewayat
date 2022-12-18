@@ -5,14 +5,23 @@ const User = require("../models/User");
 // ! Get One getAllChapters
 module.exports.getAllChapters = async (req, res) => {
   try {
-    const chapters = await Chapter.find({ published: true })
-      .populate("novel")
-      .sort({ createdAt: -1 });
+    const page = Math.abs(parseInt(req.query.page)) ?? 1;
+    const limit = 2;
+
+    const chapters = await Chapter.paginate(
+      { published: true },
+      {
+        populate: "novel",
+        sort: { createdAt: -1 },
+        page,
+        limit,
+      }
+    );
 
     res.json({
       ok: true,
       msg: "getAllChapters",
-      chapters,
+      ...chapters,
     });
   } catch (error) {
     console.log(error);

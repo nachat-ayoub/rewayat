@@ -5,6 +5,8 @@ import PaginationBar from "@components/Pagination";
 import ChapterCard from "@components/ChapterCard";
 
 const Home = ({ data }) => {
+  // console.log(data);
+
   const router = useRouter();
 
   return (
@@ -13,7 +15,7 @@ const Home = ({ data }) => {
         <div className="bg-Gray shadow rounded-xl w-full h-72"></div>
       </section>
       <section className="my-4">
-        <h2 className="text-3xl font-bold text-Black my-6">آخر التحديثات :</h2>
+        <h2 className="text-3xl font-bold my-6">آخر التحديثات :</h2>
         <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-2">
           {data.chapters.length > 0 &&
             data.chapters.map((chapter) => (
@@ -25,14 +27,23 @@ const Home = ({ data }) => {
         </div>
       </section>
       <section className="my-2">
-        <PaginationBar
-          currentPage={data.page}
-          onPageChange={(page) => {
-            router.push("/?page=" + page);
-          }}
-          totalPages={data.totalPages}
-          showIcons
-        />
+        {data.page <= data.totalPages ? (
+          <PaginationBar
+            currentPage={data.page}
+            onPageChange={(page) => {
+              router.push("/?page=" + page);
+            }}
+            totalPages={data.totalPages}
+            showIcons
+          />
+        ) : (
+          <h4 className="my-12 text-lg text-center">
+            <span className="ml-2 text-amber-500">
+              <i className="fa-solid fa-triangle-exclamation"></i>
+            </span>
+            <span>لا توجد نتائج في هذه الصفحة</span>
+          </h4>
+        )}
       </section>
     </div>
   );

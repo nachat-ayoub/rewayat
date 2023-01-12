@@ -243,7 +243,7 @@ const NovelInfo = ({ novel, storyHidden, toggleStoryHidden, mobileView }) => {
                       novel.genres.map((genre) => (
                         <LinkButton
                           key={genre.slug}
-                          href={`/novels/genre/${genre.slug}`}
+                          href={`/novels/genres/${genre.slug}`}
                         >
                           {genre.name}
                         </LinkButton>

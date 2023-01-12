@@ -37,20 +37,27 @@ module.exports.getNovelsByGenre = async (req, res) => {
       "novels"
     );
 
-    if (genre)
+    const genres = await Genre.find({});
+
+    if (genre) {
       return res.json({
         action: "getNovelsByCategory",
         ok: true,
         count: genre.novels.length,
         genre,
+        genres,
       });
-    else
+    } else {
       return res.json({
         action: "getNovelsByCategory",
         ok: false,
         count: 0,
-        genre: null,
+        genre: {
+          slug: req.params.genre,
+        },
+        genres,
       });
+    }
   } catch (error) {
     console.log(error);
   }

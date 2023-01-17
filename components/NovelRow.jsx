@@ -3,7 +3,7 @@ import Title from "./Title";
 
 const NovelRow = ({ title, novels, small }) => {
   return (
-    <div>
+    <>
       {novels && novels?.length > 0 ? (
         <div className="my-3">
           <Title title={title} className="text-sm" />
@@ -33,7 +33,7 @@ const NovelRow = ({ title, novels, small }) => {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 

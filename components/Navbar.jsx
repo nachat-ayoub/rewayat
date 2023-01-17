@@ -4,6 +4,7 @@ import Link from "next/link";
 import DarkAndLightModeButton from "./DarkAndLightModeButton";
 import UserProfile from "./UserProfile";
 import BigLogoSvg from "./BigLogoSvg";
+import SearchBar from "./SearchBar";
 
 const Navbar = () => {
   const auth = useSelector((state) => state.auth.value);
@@ -11,7 +12,7 @@ const Navbar = () => {
   return (
     <nav
       dir="rtl"
-      className="w-full py-3 px-8 text-center bg-gradient-primary text-white flex justify-between items-center"
+      className="w-full py-3 px-8 text-center bg-gradient-primary text-white flex justify-between items-center gap-x-10"
     >
       <div className="h-14">
         <Link href={"/"}>
@@ -20,8 +21,12 @@ const Navbar = () => {
           </a>
         </Link>
       </div>
+      {/*//! SearchBar */}
+      <SearchBar />
+      {/*//! SearchBar */}
+
       <div className="flex gap-3 justify-center items-center">
-        <div className="mr-6 flex gap-3 justify-center items-center">
+        <div className="_mr-6 flex gap-3 justify-center items-center">
           {auth.isAuth ? (
             <UserProfile />
           ) : (

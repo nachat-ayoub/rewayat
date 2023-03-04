@@ -1,21 +1,23 @@
 import Container from "@components/Container";
-import DropDown from "@components/DropDown";
 
-const Search = () => {
+const Search = ({ searchedWord }) => {
   return (
     <div className="w-full h-full flex flex-col items-center mr-32">
       <Container>
-        <DropDown
-          items={[<div>AYOUB</div>]}
-          dividedItem={
-            <div className="cursor-pointer" onClick={() => {}}>
-              Logout
-            </div>
-          }
-        />
+        <h1 dir="auto" className="text-center">
+          You searched for : "{searchedWord}"
+        </h1>
       </Container>
     </div>
   );
 };
 
 export default Search;
+
+export const getServerSideProps = async ({ query }) => {
+  return {
+    props: {
+      searchedWord: query?.q ?? "",
+    },
+  };
+};
